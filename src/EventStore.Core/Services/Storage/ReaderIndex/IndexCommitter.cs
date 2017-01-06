@@ -363,7 +363,8 @@ namespace EventStore.Core.Services.Storage.ReaderIndex
                 var entries = _tableIndex.GetRange(streamId, indexEntries[0].Version, indexEntries[indexEntries.Count - 1].Version);
                 foreach (var indexEntry in entries)
                 {
-                    var prepare = prepares[indexEntry.Version - indexEntries[0].Version];
+                    // TODO HAYLEY: Change this back to a long
+                    var prepare = prepares[(int)indexEntry.Version - (int)indexEntries[0].Version];
                     PrepareLogRecord indexedPrepare = GetPrepare(reader, indexEntry.Position);
                     if (indexedPrepare != null && indexedPrepare.EventStreamId == prepare.EventStreamId)
                     {

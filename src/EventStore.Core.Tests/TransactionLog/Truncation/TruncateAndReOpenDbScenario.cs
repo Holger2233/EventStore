@@ -44,9 +44,9 @@ namespace EventStore.Core.Tests.TransactionLog.Truncation
             var lowHasher = new XXHashUnsafe();
             var highHasher = new Murmur3AUnsafe();
             TableIndex = new TableIndex(Path.Combine(PathName, "index"), lowHasher, highHasher,
-                                        () => new HashListMemTable(PTableVersions.Index64Bit, MaxEntriesInMemTable * 2),
+                                        () => new HashListMemTable(PTableVersions.IndexV2, MaxEntriesInMemTable * 2),
                                         () => new TFReaderLease(readers),
-                                        PTableVersions.Index64Bit,
+                                        PTableVersions.IndexV2,
                                         MaxEntriesInMemTable);
             ReadIndex = new ReadIndex(new NoopPublisher(),
                                       readers,

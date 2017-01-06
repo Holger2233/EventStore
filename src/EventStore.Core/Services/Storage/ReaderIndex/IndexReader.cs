@@ -185,7 +185,7 @@ namespace EventStore.Core.Services.Storage.ReaderIndex
                     recordsQuery = recordsQuery.Where(x => x.Prepare.TimeStamp >= ageThreshold);
                 }
 
-                var records = recordsQuery.Reverse().Select(x => new EventRecord(x.Version, x.Prepare)).ToArray();
+                var records = recordsQuery.Reverse().Select(x => new EventRecord((int)x.Version, x.Prepare)).ToArray();
 
                 int nextEventNumber = Math.Min(endEventNumber + 1, lastEventNumber + 1);
                 if (records.Length > 0)
@@ -243,7 +243,7 @@ namespace EventStore.Core.Services.Storage.ReaderIndex
                     recordsQuery = recordsQuery.Where(x => x.Prepare.TimeStamp >= ageThreshold);
                 }
 
-                var records = recordsQuery.Select(x => new EventRecord(x.Version, x.Prepare)).ToArray();
+                var records = recordsQuery.Select(x => new EventRecord((int)x.Version, x.Prepare)).ToArray();
 
                 isEndOfStream = isEndOfStream
                                 || startEventNumber == 0
@@ -395,18 +395,20 @@ namespace EventStore.Core.Services.Storage.ReaderIndex
             int startVersion = 0;
             int latestVersion = int.MinValue;
             if(rec.EventStreamId == streamId){
-               startVersion = Math.Max(latestEntry.Version, latestEntry.Version + 1);
-               latestVersion = latestEntry.Version;
+                startVersion = Math.Max((int)latestEntry.Version, (int)latestEntry.Version + 1);
+                latestVersion = (int)latestEntry.Version;
             }
             foreach (var indexEntry in _tableIndex.GetRange(streamId, startVersion, int.MaxValue, limit: _hashCollisionReadLimit + 1))
             {
                 var r = ReadPrepareInternal(reader, indexEntry.Position);
                 if (r != null && r.EventStreamId == streamId){
                     if(latestVersion == int.MinValue){
-                        latestVersion = indexEntry.Version;
+                        latestVersion = (int)indexEntry.Version;
                         continue;
                     }
-                    return latestVersion < indexEntry.Version ? indexEntry.Version : latestVersion;
+
+                    // TODO HAYLEY int to long
+                    return latestVersion < indexEntry.Version ? (int)indexEntry.Version : latestVersion;
                 }
 
                 count++;
@@ -417,7 +419,7 @@ namespace EventStore.Core.Services.Storage.ReaderIndex
                     return EventNumber.Invalid;
                 }
             }
-            return latestVersion == int.MinValue ? ExpectedVersion.NoStream : latestVersion;
+            return latestVersion == int.MinValue ? ExpectedVersion.NoStream : (int)latestVersion;
         }
 
         private bool OriginalStreamExists(TFReaderLease reader, string metaStreamId)
