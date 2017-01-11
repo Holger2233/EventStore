@@ -6,10 +6,10 @@ namespace EventStore.Core.TransactionLog.LogRecords
 {
     public class CommitLogRecord: LogRecord, IEquatable<CommitLogRecord>
     {
-        public const byte CommitRecordVersion = 0;
+        public const byte CommitRecordVersion = 1;
 
         public readonly long TransactionPosition;
-        public readonly int FirstEventNumber;
+        public readonly long FirstEventNumber;
         public readonly long SortKey;
         public readonly Guid CorrelationId;
         public readonly DateTime TimeStamp;
@@ -18,7 +18,7 @@ namespace EventStore.Core.TransactionLog.LogRecords
                                Guid correlationId,
                                long transactionPosition,
                                DateTime timeStamp,
-                               int firstEventNumber)
+                               long firstEventNumber)
             : base(LogRecordType.Commit, CommitRecordVersion, logPosition)
         {
             Ensure.NotEmptyGuid(correlationId, "correlationId");
@@ -34,12 +34,12 @@ namespace EventStore.Core.TransactionLog.LogRecords
 
         internal CommitLogRecord(BinaryReader reader, byte version, long logPosition): base(LogRecordType.Commit, version, logPosition)
         {
-            if (version != CommitRecordVersion)
+            if (version != LogRecordVersion.LogRecordV0 && version != LogRecordVersion.LogRecordV1)
                 throw new ArgumentException(
                     string.Format("CommitRecord version {0} is incorrect. Supported version: {1}.", version, CommitRecordVersion));
 
             TransactionPosition = reader.ReadInt64();
-            FirstEventNumber = reader.ReadInt32();
+            FirstEventNumber = version == LogRecordVersion.LogRecordV0 ? reader.ReadInt32() : reader.ReadInt64();
             SortKey = reader.ReadInt64();
             CorrelationId = new Guid(reader.ReadBytes(16));
             TimeStamp = new DateTime(reader.ReadInt64());
@@ -82,7 +82,7 @@ namespace EventStore.Core.TransactionLog.LogRecords
             {
                 int result = LogPosition.GetHashCode();
                 result = (result * 397) ^ TransactionPosition.GetHashCode();
-                result = (result * 397) ^ FirstEventNumber.GetHashCode();
+                result = (result * 397) ^ (int)FirstEventNumber.GetHashCode();
                 result = (result * 397) ^ SortKey.GetHashCode();
                 result = (result * 397) ^ CorrelationId.GetHashCode();
                 result = (result * 397) ^ TimeStamp.GetHashCode();

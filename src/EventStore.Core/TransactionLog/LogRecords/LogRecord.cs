@@ -13,6 +13,11 @@ namespace EventStore.Core.TransactionLog.LogRecords
         System = 2
     }
 
+    public class LogRecordVersion {
+        public const byte LogRecordV0 = 0;
+        public const byte LogRecordV1 = 1;
+    }
+
     public abstract class LogRecord
     {
         public static readonly byte[] NoData = Empty.ByteArray;

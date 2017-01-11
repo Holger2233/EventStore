@@ -45,12 +45,12 @@ namespace EventStore.Core.TransactionLog.LogRecords
 
     public class PrepareLogRecord: LogRecord, IEquatable<PrepareLogRecord>
     {
-        public const byte PrepareRecordVersion = 0;
+        public const byte PrepareRecordVersion = 1;
 
         public readonly PrepareFlags Flags;
         public readonly long TransactionPosition;
         public readonly int TransactionOffset;
-        public readonly int ExpectedVersion;            // if IsCommitted is set, this is final EventNumber
+        public readonly long ExpectedVersion;            // if IsCommitted is set, this is final EventNumber
         public readonly string EventStreamId;
 
         public readonly Guid EventId;
@@ -88,7 +88,7 @@ namespace EventStore.Core.TransactionLog.LogRecords
                                 long transactionPosition,
                                 int transactionOffset,
                                 string eventStreamId,
-                                int expectedVersion,
+                                long expectedVersion,
                                 DateTime timeStamp, 
                                 PrepareFlags flags,
                                 string eventType, 
@@ -123,14 +123,14 @@ namespace EventStore.Core.TransactionLog.LogRecords
 
         internal PrepareLogRecord(BinaryReader reader, byte version, long logPosition): base(LogRecordType.Prepare, version, logPosition)
         {
-            if (version != PrepareRecordVersion)
+            if (version != LogRecordVersion.LogRecordV0 && version != LogRecordVersion.LogRecordV1)
                 throw new ArgumentException(string.Format(
                     "PrepareRecord version {0} is incorrect. Supported version: {1}.", version, PrepareRecordVersion));
 
             Flags = (PrepareFlags) reader.ReadUInt16();
             TransactionPosition = reader.ReadInt64();
             TransactionOffset = reader.ReadInt32();
-            ExpectedVersion = reader.ReadInt32();
+            ExpectedVersion = version == LogRecordVersion.LogRecordV0 ? reader.ReadInt32() : reader.ReadInt64();
             EventStreamId = reader.ReadString();
             EventId = new Guid(reader.ReadBytes(16));
             CorrelationId = new Guid(reader.ReadBytes(16));
@@ -200,7 +200,7 @@ namespace EventStore.Core.TransactionLog.LogRecords
                 result = (result * 397) ^ Flags.GetHashCode();
                 result = (result * 397) ^ TransactionPosition.GetHashCode();
                 result = (result * 397) ^ TransactionOffset;
-                result = (result * 397) ^ ExpectedVersion;
+                result = (result * 397) ^ (int)ExpectedVersion;
                 result = (result * 397) ^ EventStreamId.GetHashCode();
 
                 result = (result * 397) ^ EventId.GetHashCode();
