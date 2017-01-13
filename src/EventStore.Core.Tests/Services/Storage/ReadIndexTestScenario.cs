@@ -305,7 +305,7 @@ namespace EventStore.Core.Tests.Services.Storage
             return prepare;
         }
 
-        protected CommitLogRecord WriteCommit(long preparePos, string eventStreamId, int eventNumber)
+        protected CommitLogRecord WriteCommit(long preparePos, string eventStreamId, long eventNumber)
         {
             var commit = LogRecord.Commit(WriterCheckpoint.ReadNonFlushed(), Guid.NewGuid(), preparePos, eventNumber);
             long pos;
@@ -313,7 +313,7 @@ namespace EventStore.Core.Tests.Services.Storage
             return commit;
         }
 
-        protected long WriteCommit(Guid correlationId, long transactionId, string eventStreamId, int eventNumber)
+        protected long WriteCommit(Guid correlationId, long transactionId, string eventStreamId, long eventNumber)
         {
             var commit = LogRecord.Commit(WriterCheckpoint.ReadNonFlushed(), correlationId, transactionId, eventNumber);
             long pos;

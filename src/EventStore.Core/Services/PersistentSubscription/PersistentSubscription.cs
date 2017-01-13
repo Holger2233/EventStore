@@ -25,11 +25,11 @@ namespace EventStore.Core.Services.PersistentSubscription
         private readonly OutstandingMessageCache _outstandingMessages;
         internal StreamBuffer _streamBuffer;
         private PersistentSubscriptionState _state = PersistentSubscriptionState.NotReady;
-        private int _nextEventToPullFrom;
-        private int _lastCheckPoint;
+        private long _nextEventToPullFrom;
+        private long _lastCheckPoint;
         private DateTime _lastCheckPointTime = DateTime.MinValue;
         private readonly PersistentSubscriptionParams _settings;
-        private int _lastKnownMessage;
+        private long _lastKnownMessage;
         private readonly object _lock = new object();
         public bool HasClients
         {
@@ -138,7 +138,7 @@ namespace EventStore.Core.Services.PersistentSubscription
             _state &= ~PersistentSubscriptionState.Live;
         }
 
-        public void HandleReadCompleted(ResolvedEvent[] events, int newposition, bool isEndOfStream)
+        public void HandleReadCompleted(ResolvedEvent[] events, long newposition, bool isEndOfStream)
         {
             lock (_lock)
             {
@@ -425,17 +425,18 @@ namespace EventStore.Core.Services.PersistentSubscription
             }
         }
 
-        private void TryReadingParkedMessagesFrom(int position, int stopAt)
+        private void TryReadingParkedMessagesFrom(long position, long stopAt)
         {
             if ((_state & PersistentSubscriptionState.ReplayingParkedMessages) == 0) return; //not replaying
 
             Ensure.Positive(stopAt - position, "count");
-            
-            var count = Math.Min(stopAt - position, _settings.ReadBatchSize);
+
+            // TODO Hayley
+            var count = (int)Math.Min(stopAt - position, _settings.ReadBatchSize);
             _settings.StreamReader.BeginReadEvents(_settings.ParkedMessageStream, position, count,_settings.ReadBatchSize, true, (events, newposition, isstop) => HandleParkedReadCompleted(events, newposition, isstop, stopAt));
         }
 
-        public void HandleParkedReadCompleted(ResolvedEvent[] events, int newposition, bool isEndofStrem, int stopAt)
+        public void HandleParkedReadCompleted(ResolvedEvent[] events, long newposition, bool isEndofStrem, long stopAt)
         {
             lock (_lock)
             {

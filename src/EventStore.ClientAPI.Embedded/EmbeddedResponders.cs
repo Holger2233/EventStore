@@ -53,7 +53,8 @@ namespace EventStore.ClientAPI.Embedded
 
             protected override WriteResult TransformResponse(ClientMessage.WriteEventsCompleted response)
             {
-                return new WriteResult(response.LastEventNumber, new Position(response.PreparePosition, response.CommitPosition));
+                //TODO Hayley
+                return new WriteResult((int)response.LastEventNumber, new Position(response.PreparePosition, response.CommitPosition));
             }
         }
 
@@ -106,7 +107,8 @@ namespace EventStore.ClientAPI.Embedded
                 {
                     return new ConditionalWriteResult(ConditionalWriteStatus.StreamDeleted);
                 }
-                return new ConditionalWriteResult(response.LastEventNumber, new Position(response.PreparePosition, response.CommitPosition));
+                //TODO Hayley
+                return new ConditionalWriteResult((int)response.LastEventNumber, new Position(response.PreparePosition, response.CommitPosition));
             }
         }
 
@@ -331,13 +333,14 @@ namespace EventStore.ClientAPI.Embedded
 
             protected override StreamEventsSlice TransformResponse(ClientMessage.ReadStreamEventsBackwardCompleted response)
             {
+                //TODO Hayley
                 return new StreamEventsSlice(Convert(response.Result),
                     _stream,
                     _fromEventNumber,
                     ReadDirection.Backward,
                     response.Events.ConvertToClientResolvedIndexEvents(),
-                    response.NextEventNumber,
-                    response.LastEventNumber,
+                    (int)response.NextEventNumber,
+                    (int)response.LastEventNumber,
                     response.IsEndOfStream);
 
             }
@@ -392,13 +395,14 @@ namespace EventStore.ClientAPI.Embedded
 
             protected override StreamEventsSlice TransformResponse(ClientMessage.ReadStreamEventsForwardCompleted response)
             {
+                //TODO Hayley
                 return new StreamEventsSlice(Convert(response.Result),
                     _stream,
                     _fromEventNumber,
                     ReadDirection.Forward,
                     response.Events.ConvertToClientResolvedIndexEvents(),
-                    response.NextEventNumber,
-                    response.LastEventNumber,
+                    (int)response.NextEventNumber,
+                    (int)response.LastEventNumber,
                     response.IsEndOfStream);
 
             }
@@ -459,7 +463,8 @@ namespace EventStore.ClientAPI.Embedded
 
             protected override WriteResult TransformResponse(ClientMessage.TransactionCommitCompleted response)
             {
-                return new WriteResult(response.LastEventNumber, new Position(response.PreparePosition, response.CommitPosition));
+                //TODO Hayley
+                return new WriteResult((int)response.LastEventNumber, new Position(response.PreparePosition, response.CommitPosition));
             }
         }
 

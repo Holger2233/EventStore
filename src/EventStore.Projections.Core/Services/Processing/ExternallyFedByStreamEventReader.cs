@@ -23,12 +23,12 @@ namespace EventStore.Projections.Core.Services.Processing
         private int _deliveredEvents;
 
         private string _dataStreamName;
-        private int _dataNextSequenceNumber;
-        private readonly Queue<Tuple<string, int>> _pendingStreams = new Queue<Tuple<string, int>>();
+        private long _dataNextSequenceNumber;
+        private readonly Queue<Tuple<string, long>> _pendingStreams = new Queue<Tuple<string, long>>();
 
         private Guid _dataReadRequestId;
         private bool _catalogEof;
-        private int _catalogCurrentSequenceNumber;
+        private long _catalogCurrentSequenceNumber;
         private readonly HashSet<Guid> _readLengthRequests = new HashSet<Guid>();
 
 
@@ -138,7 +138,7 @@ namespace EventStore.Projections.Core.Services.Processing
             }
         }
 
-        private void EnqueueStreamForProcessing(string streamId, int catalogSequenceNumber)
+        private void EnqueueStreamForProcessing(string streamId, long catalogSequenceNumber)
         {
             _pendingStreams.Enqueue(Tuple.Create(streamId, catalogSequenceNumber));
             if (!AreEventsRequested() && !PauseRequested && !Paused)
@@ -208,7 +208,7 @@ namespace EventStore.Projections.Core.Services.Processing
                 _readLengthRequests.Add(requestId);
         }
 
-        private void DeliverStreamLength(string streamId, int length)
+        private void DeliverStreamLength(string streamId, long length)
         {
             _publisher.Publish(
                 //TODO: publish both link and event data

@@ -48,7 +48,7 @@ namespace EventStore.Core.TransactionLog.LogRecords
         }
 
         public static PrepareLogRecord Prepare(long logPosition, Guid correlationId, Guid eventId, long transactionPos, int transactionOffset,
-                                               string eventStreamId, int expectedVersion, PrepareFlags flags, string eventType, 
+                                               string eventStreamId, long expectedVersion, PrepareFlags flags, string eventType, 
                                                byte[] data, byte[] metadata, DateTime? timeStamp = null)
         {
             return new PrepareLogRecord(logPosition, correlationId, eventId, transactionPos, transactionOffset, 
@@ -56,13 +56,13 @@ namespace EventStore.Core.TransactionLog.LogRecords
                                         data, metadata);
         }
 
-        public static CommitLogRecord Commit(long logPosition, Guid correlationId, long startPosition, int eventNumber)
+        public static CommitLogRecord Commit(long logPosition, Guid correlationId, long startPosition, long eventNumber)
         {
             return new CommitLogRecord(logPosition, correlationId, startPosition, DateTime.UtcNow, eventNumber);
         }
 
         public static PrepareLogRecord SingleWrite(long logPosition, Guid correlationId, Guid eventId, string eventStreamId, 
-                                                   int expectedVersion, string eventType, byte[] data, byte[] metadata, 
+                                                   long expectedVersion, string eventType, byte[] data, byte[] metadata, 
                                                    DateTime? timestamp = null, PrepareFlags? additionalFlags = null)
         {
             return new PrepareLogRecord(logPosition, correlationId, eventId, logPosition, 0, eventStreamId, expectedVersion, 
@@ -71,7 +71,7 @@ namespace EventStore.Core.TransactionLog.LogRecords
                                         eventType, data, metadata);
         }
 
-        public static PrepareLogRecord TransactionBegin(long logPos, Guid correlationId, string eventStreamId, int expectedVersion)
+        public static PrepareLogRecord TransactionBegin(long logPos, Guid correlationId, string eventStreamId, long expectedVersion)
         {
             return new PrepareLogRecord(logPos, correlationId, Guid.NewGuid(), logPos, -1, eventStreamId, expectedVersion, 
                                         DateTime.UtcNow, PrepareFlags.TransactionBegin, null, NoData, NoData);
@@ -91,7 +91,7 @@ namespace EventStore.Core.TransactionLog.LogRecords
         }
 
         public static PrepareLogRecord DeleteTombstone(long logPosition, Guid correlationId, Guid eventId,
-                                                       string eventStreamId, int expectedVersion, PrepareFlags additionalFlags = PrepareFlags.None)
+                                                       string eventStreamId, long expectedVersion, PrepareFlags additionalFlags = PrepareFlags.None)
         {
             return new PrepareLogRecord(logPosition, correlationId, eventId, logPosition, 0, eventStreamId, 
                                         expectedVersion, DateTime.UtcNow, 

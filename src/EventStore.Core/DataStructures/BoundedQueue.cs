@@ -8,7 +8,7 @@ namespace EventStore.Core.DataStructures
         private readonly Queue<T> _queue;
 
         public int MaxCapacity { get { return _maxCapacity; } }
-        public int Count { get { return _queue.Count; } }
+        public long Count { get { return _queue.Count; } }
         public BoundedQueue(int maxCapacity)
         {
             _queue = new Queue<T>(maxCapacity);

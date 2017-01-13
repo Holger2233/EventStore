@@ -51,7 +51,7 @@ namespace EventStore.Core.Tests.TransactionLog.Scavenging.Helpers
 
             var transactions = new Dictionary<int, TransactionInfo>();
             var streams = new Dictionary<string, StreamInfo>();
-            var streamUncommitedVersion = new Dictionary<string, int>();
+            var streamUncommitedVersion = new Dictionary<string, long>();
 
             for (int i = 0; i < _chunkRecs.Count; ++i)
             {
@@ -105,7 +105,7 @@ namespace EventStore.Core.Tests.TransactionLog.Scavenging.Helpers
                     var transInfo = transactions[rec.Transaction];
                     var logPos = _db.Config.WriterCheckpoint.ReadNonFlushed();
 
-                    int streamVersion = streamUncommitedVersion[rec.StreamId];
+                    long streamVersion = streamUncommitedVersion[rec.StreamId];
                     if (streamVersion == -1
                         && rec.Type != Rec.RecType.TransStart
                         && rec.Type != Rec.RecType.Prepare
@@ -250,7 +250,7 @@ namespace EventStore.Core.Tests.TransactionLog.Scavenging.Helpers
         public Guid LastPrepareId;
         public long TransactionPosition = -1;
         public int TransactionOffset = 0;
-        public int TransactionEventNumber = -1;
+        public long TransactionEventNumber = -1;
         public bool IsDelete = false;
         public StreamMetadata StreamMetadata;
 
@@ -264,10 +264,10 @@ namespace EventStore.Core.Tests.TransactionLog.Scavenging.Helpers
 
     public class StreamInfo
     {
-        public int StreamVersion;
+        public long StreamVersion;
         public StreamMetadata StreamMetadata;
 
-        public StreamInfo(int streamVersion)
+        public StreamInfo(long streamVersion)
         {
             StreamVersion = streamVersion;
         }

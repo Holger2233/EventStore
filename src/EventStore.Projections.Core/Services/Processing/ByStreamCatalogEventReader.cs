@@ -15,15 +15,15 @@ namespace EventStore.Projections.Core.Services.Processing
     {
         private readonly IODispatcher _ioDispatcher;
         private readonly string _catalogStreamName;
-        private int _catalogCurrentSequenceNumber;
-        private int _catalogNextSequenceNumber;
+        private long _catalogCurrentSequenceNumber;
+        private long _catalogNextSequenceNumber;
         private long? _limitingCommitPosition;
         private readonly bool _resolveLinkTos;
 
         private int _maxReadCount = 111;
 
         private string _dataStreamName;
-        private int _dataNextSequenceNumber;
+        private long _dataNextSequenceNumber;
         private readonly Queue<string> _pendingStreams = new Queue<string>();
 
         private Guid _catalogReadRequestId;
@@ -37,9 +37,9 @@ namespace EventStore.Projections.Core.Services.Processing
             IPrincipal readAs,
             IODispatcher ioDispatcher,
             string catalogCatalogStreamName,
-            int catalogNextSequenceNumber,
+            long catalogNextSequenceNumber,
             string dataStreamName,
-            int dataNextSequenceNumber,
+            long dataNextSequenceNumber,
             long? limitingCommitPosition,
             bool resolveLinkTos)
             : base(publisher, eventReaderCorrelationId, readAs, true)

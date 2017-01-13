@@ -277,14 +277,14 @@ namespace EventStore.Core.Tests.Services.Storage.HashCollisions
             return new IndexBackend.MetadataCached();
         }
 
-        public int? UpdateStreamLastEventNumber(int cacheVersion, string streamId, int? lastEventNumber){
+        public long? UpdateStreamLastEventNumber(int cacheVersion, string streamId, long? lastEventNumber){
             return null;
         }
         public EventStore.Core.Data.StreamMetadata UpdateStreamMetadata(int cacheVersion, string streamId, EventStore.Core.Data.StreamMetadata metadata){
             return null;
         }
 
-        public int? SetStreamLastEventNumber(string streamId, int lastEventNumber){
+        public long? SetStreamLastEventNumber(string streamId, long lastEventNumber){
             return null;
         }
         public EventStore.Core.Data.StreamMetadata SetStreamMetadata(string streamId, EventStore.Core.Data.StreamMetadata metadata){

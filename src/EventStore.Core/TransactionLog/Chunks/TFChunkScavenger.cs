@@ -417,7 +417,7 @@ namespace EventStore.Core.TransactionLog.Chunks
             return !canRemove;
         }
 
-        private bool KeepOnlyFirstEventOfDuplicate(ITableIndex tableIndex, PrepareLogRecord prepare, int eventNumber){
+        private bool KeepOnlyFirstEventOfDuplicate(ITableIndex tableIndex, PrepareLogRecord prepare, long eventNumber){
             var result = _readIndex.ReadEvent(prepare.EventStreamId, eventNumber);
             if(result.Result == ReadEventResult.Success && result.Record.LogPosition != prepare.LogPosition) return false;
             return true;
@@ -514,7 +514,7 @@ namespace EventStore.Core.TransactionLog.Chunks
 
         internal class CommitInfo
         {
-            public readonly int EventNumber;
+            public readonly long EventNumber;
 
             //public string StreamId;
             public bool? KeepCommit;
