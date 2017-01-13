@@ -38,7 +38,7 @@ namespace EventStore.ClientAPI.Embedded
         public void Handle(ClientMessage.SubscriptionConfirmation message)
         {
             //TODO Hayley
-            ConfirmSubscription(message.CorrelationId, message.LastCommitPosition, (int)message.LastEventNumber);
+            ConfirmSubscription(message.CorrelationId, message.LastCommitPosition, message.LastEventNumber);
         }
 
         public void Handle(ClientMessage.SubscriptionDropped message)
@@ -51,7 +51,7 @@ namespace EventStore.ClientAPI.Embedded
         public void Handle(ClientMessage.PersistentSubscriptionConfirmation message)
         {
             //TODO Hayley
-            ConfirmSubscription(message.CorrelationId, message.LastCommitPosition, (int)message.LastEventNumber);
+            ConfirmSubscription(message.CorrelationId, message.LastCommitPosition, message.LastEventNumber);
         }
 
         public void Handle(ClientMessage.PersistentSubscriptionStreamEventAppeared message)
@@ -66,7 +66,7 @@ namespace EventStore.ClientAPI.Embedded
             subscription.EventAppeared(resolvedEvent);
         }
 
-        private void ConfirmSubscription(Guid correlationId, long lastCommitPosition, int? lastEventNumber)
+        private void ConfirmSubscription(Guid correlationId, long lastCommitPosition, long? lastEventNumber)
         {
             IEmbeddedSubscription subscription;
             _subscriptions.TryGetActiveSubscription(correlationId, out subscription);

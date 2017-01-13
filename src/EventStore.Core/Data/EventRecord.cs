@@ -122,7 +122,7 @@ namespace EventStore.Core.Data
                 hashCode = (hashCode*397) ^ TransactionPosition.GetHashCode();
                 hashCode = (hashCode*397) ^ TransactionOffset;
                 hashCode = (hashCode*397) ^ EventStreamId.GetHashCode();
-                hashCode = (hashCode*397) ^ (int)ExpectedVersion;
+                hashCode = (hashCode*397) ^ (int)(ExpectedVersion >> 32);
                 hashCode = (hashCode*397) ^ TimeStamp.GetHashCode();
                 hashCode = (hashCode*397) ^ Flags.GetHashCode();
                 hashCode = (hashCode*397) ^ EventType.GetHashCode();

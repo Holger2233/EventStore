@@ -131,6 +131,13 @@ namespace EventStore.Core.TransactionLog.LogRecords
             TransactionPosition = reader.ReadInt64();
             TransactionOffset = reader.ReadInt32();
             ExpectedVersion = version == LogRecordVersion.LogRecordV0 ? reader.ReadInt32() : reader.ReadInt64();
+
+            // Update expected version for deleted streams
+            if (ExpectedVersion == int.MaxValue && version == LogRecordVersion.LogRecordV0)
+            {
+                ExpectedVersion = long.MaxValue;
+            }
+
             EventStreamId = reader.ReadString();
             EventId = new Guid(reader.ReadBytes(16));
             CorrelationId = new Guid(reader.ReadBytes(16));
@@ -200,7 +207,7 @@ namespace EventStore.Core.TransactionLog.LogRecords
                 result = (result * 397) ^ Flags.GetHashCode();
                 result = (result * 397) ^ TransactionPosition.GetHashCode();
                 result = (result * 397) ^ TransactionOffset;
-                result = (result * 397) ^ (int)ExpectedVersion;
+                result = (result * 397) ^ (int)(ExpectedVersion >> 32);
                 result = (result * 397) ^ EventStreamId.GetHashCode();
 
                 result = (result * 397) ^ EventId.GetHashCode();

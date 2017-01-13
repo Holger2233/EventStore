@@ -250,10 +250,10 @@ namespace EventStore.Core.Messages
             public override int MsgTypeId { get { return TypeId; } }
 
             public readonly string EventStreamId;
-            public readonly int ExpectedVersion;
+            public readonly long ExpectedVersion;
 
             public TransactionStart(Guid internalCorrId, Guid correlationId, IEnvelope envelope, bool requireMaster,
-                                    string eventStreamId, int expectedVersion,
+                                    string eventStreamId, long expectedVersion,
                                     IPrincipal user, string login = null, string password = null)
                 : base(internalCorrId, correlationId, envelope, requireMaster, user, login, password)
             {

@@ -60,7 +60,7 @@ namespace EventStore.ClientAPI.Embedded
             // TODO Hayley
             if (eventRecord == null) return null;
             return new ClientMessage.EventRecord(
-                eventRecord.EventStreamId, (int)eventRecord.EventNumber,
+                eventRecord.EventStreamId, eventRecord.EventNumber,
                 eventRecord.EventId.ToByteArray(), eventRecord.EventType, eventRecord.IsJson ? 1 : 0,
                 eventRecord.IsJson ? 1 : 0,
                 eventRecord.Data,

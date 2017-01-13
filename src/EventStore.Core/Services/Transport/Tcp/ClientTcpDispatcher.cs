@@ -128,7 +128,7 @@ namespace EventStore.Core.Services.Transport.Tcp
                                                              e.Metadata);
             }
             // TODO Hayley
-            var dto = new TcpClientMessageDto.WriteEvents(msg.EventStreamId, (int)msg.ExpectedVersion, events, msg.RequireMaster);
+            var dto = new TcpClientMessageDto.WriteEvents(msg.EventStreamId, msg.ExpectedVersion, events, msg.RequireMaster);
             return CreateWriteRequestPackage(TcpCommand.WriteEvents, msg, dto);
         }
 
@@ -164,8 +164,8 @@ namespace EventStore.Core.Services.Transport.Tcp
             //TODO Hayley
             var dto = new TcpClientMessageDto.WriteEventsCompleted((TcpClientMessageDto.OperationResult)msg.Result,
                                                                    msg.Message,
-                                                                   (int)msg.FirstEventNumber,
-                                                                   (int)msg.LastEventNumber,
+                                                                   msg.FirstEventNumber,
+                                                                   msg.LastEventNumber,
                                                                    msg.PreparePosition,
                                                                    msg.CommitPosition);
             return new TcpPackage(TcpCommand.WriteEventsCompleted, msg.CorrelationId, dto.Serialize());
@@ -270,7 +270,7 @@ namespace EventStore.Core.Services.Transport.Tcp
         {
             // TODO Hayley
             var dto = new TcpClientMessageDto.TransactionCommitCompleted(msg.TransactionId, (TcpClientMessageDto.OperationResult)msg.Result,
-                                                                         msg.Message, (int)msg.FirstEventNumber, (int)msg.LastEventNumber, msg.PreparePosition, msg.CommitPosition);
+                                                                         msg.Message, (int)msg.FirstEventNumber, msg.LastEventNumber, msg.PreparePosition, msg.CommitPosition);
             return new TcpPackage(TcpCommand.TransactionCommitCompleted, msg.CorrelationId, dto.Serialize());
         }
 
@@ -286,7 +286,7 @@ namespace EventStore.Core.Services.Transport.Tcp
         private static TcpPackage WrapDeleteStream(ClientMessage.DeleteStream msg)
         {
             //TODO Hayley
-            var dto = new TcpClientMessageDto.DeleteStream(msg.EventStreamId, (int)msg.ExpectedVersion, msg.RequireMaster, msg.HardDelete);
+            var dto = new TcpClientMessageDto.DeleteStream(msg.EventStreamId, msg.ExpectedVersion, msg.RequireMaster, msg.HardDelete);
             return CreateWriteRequestPackage(TcpCommand.DeleteStream, msg, dto);
         }
 
@@ -340,7 +340,7 @@ namespace EventStore.Core.Services.Transport.Tcp
             //TODO Hayley
             var dto = new TcpClientMessageDto.ReadStreamEventsCompleted(
                 ConvertToResolvedIndexedEvents(msg.Events), (TcpClientMessageDto.ReadStreamEventsCompleted.ReadStreamResult)msg.Result,
-                (int)msg.NextEventNumber, (int)msg.LastEventNumber, msg.IsEndOfStream, msg.TfLastCommitPosition, msg.Error);
+                msg.NextEventNumber, msg.LastEventNumber, msg.IsEndOfStream, msg.TfLastCommitPosition, msg.Error);
             return new TcpPackage(TcpCommand.ReadStreamEventsForwardCompleted, msg.CorrelationId, dto.Serialize());
         }
 
@@ -358,7 +358,7 @@ namespace EventStore.Core.Services.Transport.Tcp
             //TODO Hayley
             var dto = new TcpClientMessageDto.ReadStreamEventsCompleted(
                 ConvertToResolvedIndexedEvents(msg.Events), (TcpClientMessageDto.ReadStreamEventsCompleted.ReadStreamResult)msg.Result,
-                (int)msg.NextEventNumber, (int)msg.LastEventNumber, msg.IsEndOfStream, msg.TfLastCommitPosition, msg.Error);
+                msg.NextEventNumber, msg.LastEventNumber, msg.IsEndOfStream, msg.TfLastCommitPosition, msg.Error);
             return new TcpPackage(TcpCommand.ReadStreamEventsBackwardCompleted, msg.CorrelationId, dto.Serialize());
         }
 
@@ -441,7 +441,7 @@ namespace EventStore.Core.Services.Transport.Tcp
         private TcpPackage WrapSubscribedToStream(ClientMessage.SubscriptionConfirmation msg)
         {
             //TODO Hayley
-            var dto = new TcpClientMessageDto.SubscriptionConfirmation(msg.LastCommitPosition, (int)msg.LastEventNumber);
+            var dto = new TcpClientMessageDto.SubscriptionConfirmation(msg.LastCommitPosition, msg.LastEventNumber);
             return new TcpPackage(TcpCommand.SubscriptionConfirmation, msg.CorrelationId, dto.Serialize());
         }
 
@@ -558,7 +558,7 @@ namespace EventStore.Core.Services.Transport.Tcp
         private TcpPackage WrapPersistentSubscriptionConfirmation(ClientMessage.PersistentSubscriptionConfirmation msg)
         {
             //TODO Hayley
-            var dto = new TcpClientMessageDto.PersistentSubscriptionConfirmation(msg.LastCommitPosition, msg.SubscriptionId, (int)msg.LastEventNumber);
+            var dto = new TcpClientMessageDto.PersistentSubscriptionConfirmation(msg.LastCommitPosition, msg.SubscriptionId, msg.LastEventNumber);
             return new TcpPackage(TcpCommand.PersistentSubscriptionConfirmation, msg.CorrelationId, dto.Serialize());
         }
 

@@ -31,7 +31,7 @@ namespace EventStore.Core.Messages
             {
                 EventStreamId = eventRecord.EventStreamId;
                 //TODO Hayley
-                EventNumber = (int)eventRecord.EventNumber;
+                EventNumber = eventRecord.EventNumber;
                 EventId = eventRecord.EventId.ToByteArray();
                 EventType = eventRecord.EventType;
                 Data = eventRecord.Data;

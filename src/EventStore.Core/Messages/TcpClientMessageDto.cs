@@ -58,7 +58,7 @@ namespace EventStore.Core.Messages
             public readonly string EventStreamId;
 
             [ProtoMember(2, IsRequired = true, Name = @"event_number", DataFormat = DataFormat.TwosComplement)]
-            public readonly int EventNumber;
+            public readonly long EventNumber;
 
             [ProtoMember(3, IsRequired = true, Name = @"event_id", DataFormat = DataFormat.Default)]
             public readonly byte[] EventId;
@@ -86,7 +86,7 @@ namespace EventStore.Core.Messages
 
             private EventRecord() { }
 
-            public EventRecord(string eventStreamId, int eventNumber, byte[] eventId, string eventType, int dataContentType, int metadataContentType, byte[] data, byte[] metadata, long? created, long? createdEpoch)
+            public EventRecord(string eventStreamId, long eventNumber, byte[] eventId, string eventType, int dataContentType, int metadataContentType, byte[] data, byte[] metadata, long? created, long? createdEpoch)
             {
                 EventStreamId = eventStreamId;
                 EventNumber = eventNumber;
@@ -152,7 +152,7 @@ namespace EventStore.Core.Messages
             public readonly string EventStreamId;
 
             [ProtoMember(2, IsRequired = true, Name = @"expected_version", DataFormat = DataFormat.TwosComplement)]
-            public readonly int ExpectedVersion;
+            public readonly long ExpectedVersion;
 
             [ProtoMember(3, Name = @"events", DataFormat = DataFormat.Default)]
             public readonly NewEvent[] Events;
@@ -162,7 +162,7 @@ namespace EventStore.Core.Messages
 
             private WriteEvents() { }
 
-            public WriteEvents(string eventStreamId, int expectedVersion, NewEvent[] events, bool requireMaster)
+            public WriteEvents(string eventStreamId, long expectedVersion, NewEvent[] events, bool requireMaster)
             {
                 EventStreamId = eventStreamId;
                 ExpectedVersion = expectedVersion;
@@ -181,10 +181,10 @@ namespace EventStore.Core.Messages
             public readonly string Message;
 
             [ProtoMember(3, IsRequired = true, Name = @"first_event_number", DataFormat = DataFormat.TwosComplement)]
-            public readonly int FirstEventNumber;
+            public readonly long FirstEventNumber;
 
             [ProtoMember(4, IsRequired = true, Name = @"last_event_number", DataFormat = DataFormat.TwosComplement)]
-            public readonly int LastEventNumber;
+            public readonly long LastEventNumber;
 
             [ProtoMember(5, IsRequired = false, Name = @"prepare_position", DataFormat = DataFormat.TwosComplement)]
             public readonly long? PreparePosition;
@@ -194,7 +194,7 @@ namespace EventStore.Core.Messages
 
             private WriteEventsCompleted() { }
 
-            public WriteEventsCompleted(OperationResult result, string message, int firstEventNumber, int lastEventNumber, long? preparePosition, long? commitPosition)
+            public WriteEventsCompleted(OperationResult result, string message, long firstEventNumber, long lastEventNumber, long? preparePosition, long? commitPosition)
             {
                 Result = result;
                 Message = message;
@@ -212,7 +212,7 @@ namespace EventStore.Core.Messages
             public readonly string EventStreamId;
 
             [ProtoMember(2, IsRequired = true, Name = @"expected_version", DataFormat = DataFormat.TwosComplement)]
-            public readonly int ExpectedVersion;
+            public readonly long ExpectedVersion;
 
             [ProtoMember(3, IsRequired = true, Name = @"require_master", DataFormat = DataFormat.Default)]
             public readonly bool RequireMaster;
@@ -222,7 +222,7 @@ namespace EventStore.Core.Messages
 
             private DeleteStream() { }
 
-            public DeleteStream(string eventStreamId, int expectedVersion, bool requireMaster, bool? hardDelete)
+            public DeleteStream(string eventStreamId, long expectedVersion, bool requireMaster, bool? hardDelete)
             {
                 EventStreamId = eventStreamId;
                 ExpectedVersion = expectedVersion;
@@ -264,14 +264,14 @@ namespace EventStore.Core.Messages
             public readonly string EventStreamId;
 
             [ProtoMember(2, IsRequired = true, Name = @"expected_version", DataFormat = DataFormat.TwosComplement)]
-            public readonly int ExpectedVersion;
+            public readonly long ExpectedVersion;
 
             [ProtoMember(3, IsRequired = true, Name = @"require_master", DataFormat = DataFormat.Default)]
             public readonly bool RequireMaster;
 
             private TransactionStart() { }
 
-            public TransactionStart(string eventStreamId, int expectedVersion, bool requireMaster)
+            public TransactionStart(string eventStreamId, long expectedVersion, bool requireMaster)
             {
                 EventStreamId = eventStreamId;
                 ExpectedVersion = expectedVersion;
@@ -376,10 +376,10 @@ namespace EventStore.Core.Messages
             public readonly string Message;
 
             [ProtoMember(4, IsRequired = true, Name = @"first_event_number", DataFormat = DataFormat.TwosComplement)]
-            public readonly int FirstEventNumber;
+            public readonly long FirstEventNumber;
 
             [ProtoMember(5, IsRequired = true, Name = @"last_event_number", DataFormat = DataFormat.TwosComplement)]
-            public readonly int LastEventNumber;
+            public readonly long LastEventNumber;
 
             [ProtoMember(6, IsRequired = false, Name = @"prepare_position", DataFormat = DataFormat.TwosComplement)]
             public readonly long? PreparePosition;
@@ -389,7 +389,7 @@ namespace EventStore.Core.Messages
 
             private TransactionCommitCompleted() { }
 
-            public TransactionCommitCompleted(long transactionId, OperationResult result, string message, int firstEventNumber, int lastEventNumber, long? preparePosition, long? commitPosition)
+            public TransactionCommitCompleted(long transactionId, OperationResult result, string message, long firstEventNumber, long lastEventNumber, long? preparePosition, long? commitPosition)
             {
                 TransactionId = transactionId;
                 Result = result;
@@ -512,10 +512,10 @@ namespace EventStore.Core.Messages
             public readonly ReadStreamEventsCompleted.ReadStreamResult Result;
 
             [ProtoMember(3, IsRequired = true, Name = @"next_event_number", DataFormat = DataFormat.TwosComplement)]
-            public readonly int NextEventNumber;
+            public readonly long NextEventNumber;
 
             [ProtoMember(4, IsRequired = true, Name = @"last_event_number", DataFormat = DataFormat.TwosComplement)]
-            public readonly int LastEventNumber;
+            public readonly long LastEventNumber;
 
             [ProtoMember(5, IsRequired = true, Name = @"is_end_of_stream", DataFormat = DataFormat.Default)]
             public readonly bool IsEndOfStream;
@@ -551,7 +551,7 @@ namespace EventStore.Core.Messages
 
             private ReadStreamEventsCompleted() { }
 
-            public ReadStreamEventsCompleted(ResolvedIndexedEvent[] events, ReadStreamEventsCompleted.ReadStreamResult result, int nextEventNumber, int lastEventNumber, bool isEndOfStream, long lastCommitPosition, string error)
+            public ReadStreamEventsCompleted(ResolvedIndexedEvent[] events, ReadStreamEventsCompleted.ReadStreamResult result, long nextEventNumber, long lastEventNumber, bool isEndOfStream, long lastCommitPosition, string error)
             {
                 Events = events;
                 Result = result;
@@ -1015,11 +1015,11 @@ namespace EventStore.Core.Messages
             public readonly string SubscriptionId;
 
             [ProtoMember(3, IsRequired = false, Name = @"last_event_number", DataFormat = DataFormat.TwosComplement)]
-            public readonly int? LastEventNumber;
+            public readonly long? LastEventNumber;
 
             private PersistentSubscriptionConfirmation() { }
 
-            public PersistentSubscriptionConfirmation(long lastCommitPosition, string subscriptionId, int? lastEventNumber)
+            public PersistentSubscriptionConfirmation(long lastCommitPosition, string subscriptionId, long? lastEventNumber)
             {
                 LastCommitPosition = lastCommitPosition;
                 SubscriptionId = subscriptionId;
@@ -1066,11 +1066,11 @@ namespace EventStore.Core.Messages
             public readonly long LastCommitPosition;
 
             [ProtoMember(2, IsRequired = false, Name = @"last_event_number", DataFormat = DataFormat.TwosComplement)]
-            public readonly int? LastEventNumber;
+            public readonly long? LastEventNumber;
 
             private SubscriptionConfirmation() { }
 
-            public SubscriptionConfirmation(long lastCommitPosition, int? lastEventNumber)
+            public SubscriptionConfirmation(long lastCommitPosition, long? lastEventNumber)
             {
                 LastCommitPosition = lastCommitPosition;
                 LastEventNumber = lastEventNumber;

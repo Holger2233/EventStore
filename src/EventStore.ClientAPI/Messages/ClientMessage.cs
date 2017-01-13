@@ -58,7 +58,7 @@ namespace EventStore.ClientAPI.Messages
     public readonly string EventStreamId;
   
     [ProtoMember(2, IsRequired = true, Name=@"event_number", DataFormat = DataFormat.TwosComplement)]
-    public readonly int EventNumber;
+    public readonly long EventNumber;
   
     [ProtoMember(3, IsRequired = true, Name=@"event_id", DataFormat = DataFormat.Default)]
     public readonly byte[] EventId;
@@ -86,7 +86,7 @@ namespace EventStore.ClientAPI.Messages
   
     private EventRecord() {}
   
-    public EventRecord(string eventStreamId, int eventNumber, byte[] eventId, string eventType, int dataContentType, int metadataContentType, byte[] data, byte[] metadata, long? created, long? createdEpoch)
+    public EventRecord(string eventStreamId, long eventNumber, byte[] eventId, string eventType, int dataContentType, int metadataContentType, byte[] data, byte[] metadata, long? created, long? createdEpoch)
     {
         EventStreamId = eventStreamId;
         EventNumber = eventNumber;
@@ -152,7 +152,7 @@ namespace EventStore.ClientAPI.Messages
     public readonly string EventStreamId;
   
     [ProtoMember(2, IsRequired = true, Name=@"expected_version", DataFormat = DataFormat.TwosComplement)]
-    public readonly int ExpectedVersion;
+    public readonly long ExpectedVersion;
   
     [ProtoMember(3, Name=@"events", DataFormat = DataFormat.Default)]
     public readonly NewEvent[] Events;
@@ -162,7 +162,7 @@ namespace EventStore.ClientAPI.Messages
   
     private WriteEvents() {}
   
-    public WriteEvents(string eventStreamId, int expectedVersion, NewEvent[] events, bool requireMaster)
+    public WriteEvents(string eventStreamId, long expectedVersion, NewEvent[] events, bool requireMaster)
     {
         EventStreamId = eventStreamId;
         ExpectedVersion = expectedVersion;
@@ -212,7 +212,7 @@ namespace EventStore.ClientAPI.Messages
     public readonly string EventStreamId;
   
     [ProtoMember(2, IsRequired = true, Name=@"expected_version", DataFormat = DataFormat.TwosComplement)]
-    public readonly int ExpectedVersion;
+    public readonly long ExpectedVersion;
   
     [ProtoMember(3, IsRequired = true, Name=@"require_master", DataFormat = DataFormat.Default)]
     public readonly bool RequireMaster;
@@ -222,7 +222,7 @@ namespace EventStore.ClientAPI.Messages
   
     private DeleteStream() {}
   
-    public DeleteStream(string eventStreamId, int expectedVersion, bool requireMaster, bool? hardDelete)
+    public DeleteStream(string eventStreamId, long expectedVersion, bool requireMaster, bool? hardDelete)
     {
         EventStreamId = eventStreamId;
         ExpectedVersion = expectedVersion;
@@ -264,14 +264,14 @@ namespace EventStore.ClientAPI.Messages
     public readonly string EventStreamId;
   
     [ProtoMember(2, IsRequired = true, Name=@"expected_version", DataFormat = DataFormat.TwosComplement)]
-    public readonly int ExpectedVersion;
+    public readonly long ExpectedVersion;
   
     [ProtoMember(3, IsRequired = true, Name=@"require_master", DataFormat = DataFormat.Default)]
     public readonly bool RequireMaster;
   
     private TransactionStart() {}
   
-    public TransactionStart(string eventStreamId, int expectedVersion, bool requireMaster)
+    public TransactionStart(string eventStreamId, long expectedVersion, bool requireMaster)
     {
         EventStreamId = eventStreamId;
         ExpectedVersion = expectedVersion;
@@ -408,7 +408,7 @@ namespace EventStore.ClientAPI.Messages
     public readonly string EventStreamId;
   
     [ProtoMember(2, IsRequired = true, Name=@"event_number", DataFormat = DataFormat.TwosComplement)]
-    public readonly int EventNumber;
+    public readonly long EventNumber;
   
     [ProtoMember(3, IsRequired = true, Name=@"resolve_link_tos", DataFormat = DataFormat.Default)]
     public readonly bool ResolveLinkTos;
@@ -418,7 +418,7 @@ namespace EventStore.ClientAPI.Messages
   
     private ReadEvent() {}
   
-    public ReadEvent(string eventStreamId, int eventNumber, bool resolveLinkTos, bool requireMaster)
+    public ReadEvent(string eventStreamId, long eventNumber, bool resolveLinkTos, bool requireMaster)
     {
         EventStreamId = eventStreamId;
         EventNumber = eventNumber;
@@ -479,7 +479,7 @@ namespace EventStore.ClientAPI.Messages
     public readonly string EventStreamId;
   
     [ProtoMember(2, IsRequired = true, Name=@"from_event_number", DataFormat = DataFormat.TwosComplement)]
-    public readonly int FromEventNumber;
+    public readonly long FromEventNumber;
   
     [ProtoMember(3, IsRequired = true, Name=@"max_count", DataFormat = DataFormat.TwosComplement)]
     public readonly int MaxCount;
@@ -492,7 +492,7 @@ namespace EventStore.ClientAPI.Messages
   
     private ReadStreamEvents() {}
   
-    public ReadStreamEvents(string eventStreamId, int fromEventNumber, int maxCount, bool resolveLinkTos, bool requireMaster)
+    public ReadStreamEvents(string eventStreamId, long fromEventNumber, int maxCount, bool resolveLinkTos, bool requireMaster)
     {
         EventStreamId = eventStreamId;
         FromEventNumber = fromEventNumber;

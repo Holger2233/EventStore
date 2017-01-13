@@ -56,7 +56,7 @@ namespace EventStore.Core.Services.Transport.Tcp
         private TcpPackage WrapCommitAck(StorageMessage.CommitAck msg)
         {
             // TODO Hayley
-            var dto = new ReplicationMessageDto.CommitAck(msg.LogPosition, msg.TransactionPosition, (int)msg.FirstEventNumber, (int)msg.LastEventNumber);
+            var dto = new ReplicationMessageDto.CommitAck(msg.LogPosition, msg.TransactionPosition, msg.FirstEventNumber, msg.LastEventNumber);
             return new TcpPackage(TcpCommand.CommitAck, msg.CorrelationId, dto.Serialize());
         }
 
