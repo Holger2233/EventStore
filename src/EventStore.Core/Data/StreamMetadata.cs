@@ -75,7 +75,7 @@ namespace EventStore.Core.Data
 
             int? maxCount = null;
             TimeSpan? maxAge = null;
-            int? truncateBefore = null;
+            long? truncateBefore = null;
             bool? tempStream = null;
             TimeSpan? cacheControl = null;
             StreamAcl acl = null;
@@ -107,7 +107,7 @@ namespace EventStore.Core.Data
                     {
                         Check(reader.Read(), reader);
                         Check(JsonToken.Integer, reader);
-                        truncateBefore = (int) (long) reader.Value;
+                        truncateBefore = (long) reader.Value;
                         break;
                     }
                     case SystemMetadata.TempStream:
