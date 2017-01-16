@@ -28,7 +28,7 @@ namespace EventStore.ClientAPI
         /// The event number from which previous events can be scavenged.
         /// This is used to implement soft-deletion of streams.
         /// </summary>
-        public readonly int? TruncateBefore;
+        public readonly long? TruncateBefore;
         /// <summary>
         /// The amount of time for which the stream head is cachable.
         /// </summary>
@@ -52,7 +52,7 @@ namespace EventStore.ClientAPI
 
         private readonly IDictionary<string, JToken> _customMetadata;
 
-        internal StreamMetadata(int? maxCount, TimeSpan? maxAge, int? truncateBefore, TimeSpan? cacheControl, 
+        internal StreamMetadata(int? maxCount, TimeSpan? maxAge, long? truncateBefore, TimeSpan? cacheControl, 
                                 StreamAcl acl, IDictionary<string, JToken> customMetadata = null)
         {
             if (maxCount <= 0)

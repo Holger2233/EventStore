@@ -12,7 +12,7 @@ namespace EventStore.ClientAPI
     {
         private int? _maxCount;
         private TimeSpan? _maxAge;
-        private int? _truncateBefore;
+        private long? _truncateBefore;
         private TimeSpan? _cacheControl;
         private string[] _aclRead;
         private string[] _aclWrite;
@@ -25,7 +25,7 @@ namespace EventStore.ClientAPI
         internal StreamMetadataBuilder(
             int? maxCount = null,
             TimeSpan? maxAge = null,
-            int? truncateBefore = null,
+            long? truncateBefore = null,
             TimeSpan? cacheControl = null,
             string[] aclRead = null,
             string[] aclWrite = null,
@@ -99,7 +99,7 @@ namespace EventStore.ClientAPI
         /// </summary>
         /// <param name="truncateBefore">The event number from which previous events can be scavenged.</param>
         /// <returns>The builder.</returns>
-        public StreamMetadataBuilder SetTruncateBefore(int truncateBefore)
+        public StreamMetadataBuilder SetTruncateBefore(long truncateBefore)
         {
             Ensure.Nonnegative(truncateBefore, "truncateBefore");
             _truncateBefore = truncateBefore;

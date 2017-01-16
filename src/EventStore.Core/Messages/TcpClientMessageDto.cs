@@ -408,7 +408,7 @@ namespace EventStore.Core.Messages
             public readonly string EventStreamId;
 
             [ProtoMember(2, IsRequired = true, Name = @"event_number", DataFormat = DataFormat.TwosComplement)]
-            public readonly int EventNumber;
+            public readonly long EventNumber;
 
             [ProtoMember(3, IsRequired = true, Name = @"resolve_link_tos", DataFormat = DataFormat.Default)]
             public readonly bool ResolveLinkTos;
@@ -418,7 +418,7 @@ namespace EventStore.Core.Messages
 
             private ReadEvent() { }
 
-            public ReadEvent(string eventStreamId, int eventNumber, bool resolveLinkTos, bool requireMaster)
+            public ReadEvent(string eventStreamId, long eventNumber, bool resolveLinkTos, bool requireMaster)
             {
                 EventStreamId = eventStreamId;
                 EventNumber = eventNumber;
@@ -479,7 +479,7 @@ namespace EventStore.Core.Messages
             public readonly string EventStreamId;
 
             [ProtoMember(2, IsRequired = true, Name = @"from_event_number", DataFormat = DataFormat.TwosComplement)]
-            public readonly int FromEventNumber;
+            public readonly long FromEventNumber;
 
             [ProtoMember(3, IsRequired = true, Name = @"max_count", DataFormat = DataFormat.TwosComplement)]
             public readonly int MaxCount;
@@ -492,7 +492,7 @@ namespace EventStore.Core.Messages
 
             private ReadStreamEvents() { }
 
-            public ReadStreamEvents(string eventStreamId, int fromEventNumber, int maxCount, bool resolveLinkTos, bool requireMaster)
+            public ReadStreamEvents(string eventStreamId, long fromEventNumber, int maxCount, bool resolveLinkTos, bool requireMaster)
             {
                 EventStreamId = eventStreamId;
                 FromEventNumber = fromEventNumber;
@@ -661,7 +661,7 @@ namespace EventStore.Core.Messages
             public readonly bool ResolveLinkTos;
 
             [ProtoMember(4, IsRequired = true, Name = @"start_from", DataFormat = DataFormat.TwosComplement)]
-            public readonly int StartFrom;
+            public readonly long StartFrom;
 
             [ProtoMember(5, IsRequired = true, Name = @"message_timeout_milliseconds", DataFormat = DataFormat.TwosComplement)]
             public readonly int MessageTimeoutMilliseconds;
@@ -701,7 +701,7 @@ namespace EventStore.Core.Messages
 
             private CreatePersistentSubscription() { }
 
-            public CreatePersistentSubscription(string subscriptionGroupName, string eventStreamId, bool resolveLinkTos, int startFrom, int messageTimeoutMilliseconds, bool recordStatistics, int liveBufferSize, int readBatchSize, int bufferSize, int maxRetryCount, bool preferRoundRobin, int checkpointAfterTime, int checkpointMaxCount, int checkpointMinCount, int subscriberMaxCount, string namedConsumerStrategy)
+            public CreatePersistentSubscription(string subscriptionGroupName, string eventStreamId, bool resolveLinkTos, long startFrom, int messageTimeoutMilliseconds, bool recordStatistics, int liveBufferSize, int readBatchSize, int bufferSize, int maxRetryCount, bool preferRoundRobin, int checkpointAfterTime, int checkpointMaxCount, int checkpointMinCount, int subscriberMaxCount, string namedConsumerStrategy)
             {
                 SubscriptionGroupName = subscriptionGroupName;
                 EventStreamId = eventStreamId;
@@ -753,7 +753,7 @@ namespace EventStore.Core.Messages
             public readonly bool ResolveLinkTos;
 
             [ProtoMember(4, IsRequired = true, Name = @"start_from", DataFormat = DataFormat.TwosComplement)]
-            public readonly int StartFrom;
+            public readonly long StartFrom;
 
             [ProtoMember(5, IsRequired = true, Name = @"message_timeout_milliseconds", DataFormat = DataFormat.TwosComplement)]
             public readonly int MessageTimeoutMilliseconds;
@@ -793,7 +793,7 @@ namespace EventStore.Core.Messages
 
             private UpdatePersistentSubscription() { }
 
-            public UpdatePersistentSubscription(string subscriptionGroupName, string eventStreamId, bool resolveLinkTos, int startFrom, int messageTimeoutMilliseconds, bool recordStatistics, int liveBufferSize, int readBatchSize, int bufferSize, int maxRetryCount, bool preferRoundRobin, int checkpointAfterTime, int checkpointMaxCount, int checkpointMinCount, int subscriberMaxCount, string namedConsumerStrategy)
+            public UpdatePersistentSubscription(string subscriptionGroupName, string eventStreamId, bool resolveLinkTos, long startFrom, int messageTimeoutMilliseconds, bool recordStatistics, int liveBufferSize, int readBatchSize, int bufferSize, int maxRetryCount, bool preferRoundRobin, int checkpointAfterTime, int checkpointMaxCount, int checkpointMinCount, int subscriberMaxCount, string namedConsumerStrategy)
             {
                 SubscriptionGroupName = subscriptionGroupName;
                 EventStreamId = eventStreamId;
