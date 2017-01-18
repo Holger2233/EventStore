@@ -145,7 +145,7 @@ namespace EventStore.Core.Tests.Index.IndexV1
         [Test]
         public void range_query_returns_nothing_for_nonexistent_stream()
         {
-            var entries = PTable.GetRange(0x010200000000, 0, int.MaxValue).ToArray();
+            var entries = PTable.GetRange(0x010200000000, 0, long.MaxValue).ToArray();
             Assert.AreEqual(0, entries.Length);
         }
 

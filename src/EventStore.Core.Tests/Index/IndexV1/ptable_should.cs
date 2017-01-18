@@ -29,7 +29,7 @@ namespace EventStore.Core.Tests.Index.IndexV1
         [Test]
         public void throw_argumentoutofrangeexception_on_range_query_when_provided_with_negative_start_version()
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => _ptable.GetRange(0x0000, -1, int.MaxValue).ToArray());
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ptable.GetRange(0x0000, -1, long.MaxValue).ToArray());
         }
 
         [Test]

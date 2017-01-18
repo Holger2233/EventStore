@@ -516,7 +516,7 @@ namespace EventStore.ClientAPI.Internal
                     case EventReadStatus.NoStream:
                         return new RawStreamMetadataResult(stream, false, -1, Empty.ByteArray);
                     case EventReadStatus.StreamDeleted:
-                        return new RawStreamMetadataResult(stream, true, int.MaxValue, Empty.ByteArray);
+                        return new RawStreamMetadataResult(stream, true, long.MaxValue, Empty.ByteArray);
                     default:
                         throw new ArgumentOutOfRangeException(string.Format("Unexpected ReadEventResult: {0}.", res.Status));
                 }

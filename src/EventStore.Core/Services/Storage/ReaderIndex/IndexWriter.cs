@@ -232,7 +232,7 @@ namespace EventStore.Core.Services.Storage.ReaderIndex
                 _committedEvents.PutRecord(prepare.EventId, new EventInfo(streamId, eventNumber), throwOnDuplicate: false);
             }
 
-            if (eventNumber != int.MinValue)
+            if (eventNumber != long.MinValue)
                 _streamVersions.Put(streamId, eventNumber, +1);
 
             if (lastPrepare != null && SystemStreams.IsMetastream(streamId))

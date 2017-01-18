@@ -72,7 +72,7 @@ namespace EventStore.Core.Services.PersistentSubscription
         public void BeginReadEndSequence(Action<long?> completed)
         {
             _ioDispatcher.ReadBackward(_parkedStreamId,
-                int.MaxValue,
+                long.MaxValue,
                 1,
                 false,
                 SystemAccount.Principal, comp =>

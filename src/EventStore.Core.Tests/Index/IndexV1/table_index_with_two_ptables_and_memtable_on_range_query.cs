@@ -195,7 +195,7 @@ namespace EventStore.Core.Tests.Index.IndexV1
         [Test]
         public void should_return_correct_full_range_with_descending_order_for_1()
         {
-            var range = _tableIndex.GetRange("1", 0, int.MaxValue).ToArray();
+            var range = _tableIndex.GetRange("1", 0, long.MaxValue).ToArray();
             Assert.AreEqual(4, range.Length);
             Assert.AreEqual(new IndexEntry(GetHash("1"), 1, 0xFF11), range[0]);
             Assert.AreEqual(new IndexEntry(GetHash("1"), 1, 0xFF01), range[1]);
@@ -206,7 +206,7 @@ namespace EventStore.Core.Tests.Index.IndexV1
         [Test]
         public void should_return_correct_full_range_with_descending_order_for_2()
         {
-            var range = _tableIndex.GetRange("2", 0, int.MaxValue).ToArray();
+            var range = _tableIndex.GetRange("2", 0, long.MaxValue).ToArray();
             Assert.AreEqual(2, range.Length);
             Assert.AreEqual(new IndexEntry(GetHash("2"), 1, 0xFF01), range[0]);
             Assert.AreEqual(new IndexEntry(GetHash("2"), 0, 0xFF00), range[1]);
@@ -215,7 +215,7 @@ namespace EventStore.Core.Tests.Index.IndexV1
         [Test]
         public void should_return_correct_full_range_with_descending_order_for_3()
         {
-            var range = _tableIndex.GetRange("3", 0, int.MaxValue).ToArray();
+            var range = _tableIndex.GetRange("3", 0, long.MaxValue).ToArray();
             Assert.AreEqual(4, range.Length);
             Assert.AreEqual(new IndexEntry(GetHash("3"), 1, 0xFF03), range[0]);
             Assert.AreEqual(new IndexEntry(GetHash("3"), 1, 0xFF01), range[1]);
@@ -226,7 +226,7 @@ namespace EventStore.Core.Tests.Index.IndexV1
         [Test]
         public void should_return_correct_full_range_with_descending_order_for_4()
         {
-            var range = _tableIndex.GetRange("4", 0, int.MaxValue).ToArray();
+            var range = _tableIndex.GetRange("4", 0, long.MaxValue).ToArray();
             Assert.AreEqual(2, range.Length);
             Assert.AreEqual(new IndexEntry(GetHash("4"), 0, 0xFF01), range[0]);
             Assert.AreEqual(new IndexEntry(GetHash("4"), 0, 0xFF00), range[1]);
@@ -235,7 +235,7 @@ namespace EventStore.Core.Tests.Index.IndexV1
         [Test]
         public void should_return_correct_full_range_with_descending_order_for_5()
         {
-            var range = _tableIndex.GetRange("5", 0, int.MaxValue).ToArray();
+            var range = _tableIndex.GetRange("5", 0, long.MaxValue).ToArray();
             Assert.AreEqual(1, range.Length);
             Assert.AreEqual(new IndexEntry(GetHash("5"), 10, 0xFFF1), range[0]);
         }
@@ -243,7 +243,7 @@ namespace EventStore.Core.Tests.Index.IndexV1
         [Test]
         public void should_return_correct_full_range_with_descending_order_for_6()
         {
-            var range = _tableIndex.GetRange("6", 0, int.MaxValue).ToArray();
+            var range = _tableIndex.GetRange("6", 0, long.MaxValue).ToArray();
             Assert.AreEqual(2, range.Length);
             Assert.AreEqual(new IndexEntry(GetHash("6"), 1, 0xFF01), range[0]);
             Assert.AreEqual(new IndexEntry(GetHash("6"), 0, 0xFF00), range[1]);

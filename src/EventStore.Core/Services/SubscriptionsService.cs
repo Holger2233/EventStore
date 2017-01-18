@@ -8,6 +8,7 @@ using EventStore.Core.Messages;
 using EventStore.Core.Messaging;
 using EventStore.Core.Services.Storage.ReaderIndex;
 using EventStore.Core.Services.TimerService;
+using System.Linq;
 
 namespace EventStore.Core.Services
 {
@@ -66,7 +67,8 @@ namespace EventStore.Core.Services
         /* SUBSCRIPTION SECTION */
         public void Handle(SystemMessage.BecomeShuttingDown message)
         {
-            foreach (var subscription in _subscriptionsById.Values)
+            List<Subscription> subscriptions = _subscriptionsById.Values.ToList();
+            foreach (var subscription in subscriptions)
             {
                 DropSubscription(subscription, sendDropNotification: true);
             }

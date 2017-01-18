@@ -201,7 +201,7 @@ namespace EventStore.Core.Index
                         stream.Read(buffer, 0, PTableHeader.Size);
                         md5.TransformBlock(buffer, 0, PTableHeader.Size, null, 0);
                         long previousNextIndex = long.MinValue;
-                        var previousKey = new IndexEntryKey(long.MaxValue, int.MaxValue);
+                        var previousKey = new IndexEntryKey(long.MaxValue, long.MaxValue);
                         for (long k = 0; k < midpointsCount; ++k)
                         {
                             var nextIndex = (long)k * (count - 1) / (midpointsCount - 1);
@@ -329,7 +329,7 @@ namespace EventStore.Core.Index
         public bool TryGetLatestEntry(ulong stream, out IndexEntry entry)
         {
             ulong hash = GetHash(stream);
-            return TryGetLargestEntry(hash, 0, int.MaxValue, out entry);
+            return TryGetLargestEntry(hash, 0, long.MaxValue, out entry);
         }
 
         private bool TryGetLargestEntry(ulong stream, long startNumber, long endNumber, out IndexEntry entry)
@@ -381,10 +381,10 @@ namespace EventStore.Core.Index
         public bool TryGetOldestEntry(ulong stream, out IndexEntry entry)
         {
             ulong hash = GetHash(stream);
-            return TryGetSmallestEntry(hash, 0, int.MaxValue, out entry);
+            return TryGetSmallestEntry(hash, 0, long.MaxValue, out entry);
         }
 
-        private bool TryGetSmallestEntry(ulong stream, int startNumber, int endNumber, out IndexEntry entry)
+        private bool TryGetSmallestEntry(ulong stream, long startNumber, long endNumber, out IndexEntry entry)
         {
             Ensure.Nonnegative(startNumber, "startNumber");
             Ensure.Nonnegative(endNumber, "endNumber");

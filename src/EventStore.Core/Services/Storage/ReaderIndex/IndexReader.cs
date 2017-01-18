@@ -398,11 +398,11 @@ namespace EventStore.Core.Services.Storage.ReaderIndex
                startVersion = Math.Max(latestEntry.Version, latestEntry.Version + 1);
                latestVersion = latestEntry.Version;
             }
-            foreach (var indexEntry in _tableIndex.GetRange(streamId, startVersion, int.MaxValue, limit: _hashCollisionReadLimit + 1))
+            foreach (var indexEntry in _tableIndex.GetRange(streamId, startVersion, long.MaxValue, limit: _hashCollisionReadLimit + 1))
             {
                 var r = ReadPrepareInternal(reader, indexEntry.Position);
                 if (r != null && r.EventStreamId == streamId){
-                    if(latestVersion == int.MinValue){
+                    if(latestVersion == long.MinValue){
                         latestVersion = indexEntry.Version;
                         continue;
                     }
@@ -417,7 +417,7 @@ namespace EventStore.Core.Services.Storage.ReaderIndex
                     return EventNumber.Invalid;
                 }
             }
-            return latestVersion == int.MinValue ? ExpectedVersion.NoStream : latestVersion;
+            return latestVersion == long.MinValue ? ExpectedVersion.NoStream : latestVersion;
         }
 
         private bool OriginalStreamExists(TFReaderLease reader, string metaStreamId)

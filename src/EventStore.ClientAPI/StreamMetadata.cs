@@ -309,7 +309,7 @@ namespace EventStore.ClientAPI
 
                 int? maxCount = null;
                 TimeSpan? maxAge = null;
-                int? truncateBefore = null;
+                long? truncateBefore = null;
                 TimeSpan? cacheControl = null;
                 StreamAcl acl = null;
                 Dictionary<string, JToken> customMetadata = null;
@@ -341,7 +341,7 @@ namespace EventStore.ClientAPI
                         {
                             Check(reader.Read(), reader);
                             Check(JsonToken.Integer, reader);
-                            truncateBefore = (int)(long)reader.Value;
+                            truncateBefore = (long)reader.Value;
                             break;
                         }
                         case SystemMetadata.CacheControl:
