@@ -73,7 +73,7 @@ namespace EventStore.Core.Data
             Check(reader.Read(), reader);
             Check(JsonToken.StartObject, reader);
 
-            int? maxCount = null;
+            long? maxCount = null;
             TimeSpan? maxAge = null;
             long? truncateBefore = null;
             bool? tempStream = null;
@@ -93,7 +93,7 @@ namespace EventStore.Core.Data
                     {
                         Check(reader.Read(), reader);
                         Check(JsonToken.Integer, reader);
-                        maxCount = (int) (long) reader.Value;
+                        maxCount = (long) reader.Value;
                         break;
                     }
                     case SystemMetadata.MaxAge:

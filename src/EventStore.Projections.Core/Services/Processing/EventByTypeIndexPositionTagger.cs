@@ -88,7 +88,7 @@ namespace EventStore.Projections.Core.Services.Processing
         public override CheckpointTag MakeZeroCheckpointTag()
         {
             return CheckpointTag.FromEventTypeIndexPositions(
-                Phase, new TFPos(0, -1), _eventTypes.ToDictionary(v => v, v => (long)ExpectedVersion.NoStream));
+                Phase, new TFPos(0, -1), _eventTypes.ToDictionary(v => v, v => ExpectedVersion.NoStream));
         }
 
         public override bool IsCompatible(CheckpointTag checkpointTag)

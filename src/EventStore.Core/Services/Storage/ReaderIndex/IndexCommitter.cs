@@ -363,6 +363,7 @@ namespace EventStore.Core.Services.Storage.ReaderIndex
                 var entries = _tableIndex.GetRange(streamId, indexEntries[0].Version, indexEntries[indexEntries.Count - 1].Version);
                 foreach (var indexEntry in entries)
                 {
+                    // TODO Hayley
                     int prepareIndex = (int)(indexEntry.Version - indexEntries[0].Version);
                     var prepare = prepares[prepareIndex];
                     PrepareLogRecord indexedPrepare = GetPrepare(reader, indexEntry.Position);

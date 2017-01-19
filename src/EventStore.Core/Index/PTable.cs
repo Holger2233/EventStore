@@ -31,10 +31,10 @@ namespace EventStore.Core.Index
     {
         public const int IndexEntryV1Size = sizeof(int) + sizeof(int) + sizeof(long);
         public const int IndexEntryV2Size = sizeof(int) + sizeof(long) + sizeof(long);
-		public const int IndexEntryV3Size = sizeof(long) + sizeof(long) + sizeof(long);
-		public const int IndexKeyV1Size = sizeof(int) + sizeof(int);
-		public const int IndexKeyV2Size = sizeof(int) + sizeof(long);
-		public const int IndexKeyV3Size = sizeof(long) + sizeof(long);
+        public const int IndexEntryV3Size = sizeof(long) + sizeof(long) + sizeof(long);
+        public const int IndexKeyV1Size = sizeof(int) + sizeof(int);
+        public const int IndexKeyV2Size = sizeof(int) + sizeof(long);
+        public const int IndexKeyV3Size = sizeof(long) + sizeof(long);
         public const int MD5Size = 16;
         public const int DefaultBufferSize = 8192;
         public const int DefaultSequentialBufferSize = 65536;
@@ -108,16 +108,16 @@ namespace EventStore.Core.Index
                     _indexEntrySize = IndexEntryV1Size;
                     _indexKeySize = IndexKeyV1Size;
                 }
-				if (_version == PTableVersions.IndexV2)
+                if (_version == PTableVersions.IndexV2)
                 {
                     _indexEntrySize = IndexEntryV2Size;
                     _indexKeySize = IndexKeyV2Size;
                 }
-				if (_version == PTableVersions.IndexV3)
-				{
-					_indexEntrySize = IndexEntryV3Size;
-					_indexKeySize = IndexKeyV3Size;
-				}
+                if (_version == PTableVersions.IndexV3)
+                {
+                    _indexEntrySize = IndexEntryV3Size;
+                    _indexKeySize = IndexKeyV3Size;
+                }
                 _count = ((_size - PTableHeader.Size - MD5Size) / _indexEntrySize);
 
                 if (Count == 0)

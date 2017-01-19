@@ -211,7 +211,7 @@ namespace EventStore.Core.Services.Storage.ReaderIndex
         public void PreCommit(CommitLogRecord commit)
         {
             string streamId = null;
-            long eventNumber = long.MinValue;
+            long eventNumber = EventNumber.Invalid;
             PrepareLogRecord lastPrepare = null;
 
             foreach (var prepare in GetTransactionPrepares(commit.TransactionPosition, commit.LogPosition))
@@ -232,7 +232,7 @@ namespace EventStore.Core.Services.Storage.ReaderIndex
                 _committedEvents.PutRecord(prepare.EventId, new EventInfo(streamId, eventNumber), throwOnDuplicate: false);
             }
 
-            if (eventNumber != long.MinValue)
+            if (eventNumber != EventNumber.Invalid)
                 _streamVersions.Put(streamId, eventNumber, +1);
 
             if (lastPrepare != null && SystemStreams.IsMetastream(streamId))
@@ -249,7 +249,7 @@ namespace EventStore.Core.Services.Storage.ReaderIndex
 
             var lastPrepare = commitedPrepares[commitedPrepares.Count - 1];
             string streamId = lastPrepare.EventStreamId;
-            long eventNumber = long.MinValue;
+            long eventNumber = EventNumber.Invalid;
             foreach (var prepare in commitedPrepares)
             {
                 if (prepare.Flags.HasNoneOf(PrepareFlags.StreamDelete | PrepareFlags.Data))

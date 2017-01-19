@@ -270,7 +270,7 @@ namespace EventStore.Core.Services.Transport.Tcp
         {
             // TODO Hayley
             var dto = new TcpClientMessageDto.TransactionCommitCompleted(msg.TransactionId, (TcpClientMessageDto.OperationResult)msg.Result,
-                                                                         msg.Message, (int)msg.FirstEventNumber, msg.LastEventNumber, msg.PreparePosition, msg.CommitPosition);
+                                                                         msg.Message, msg.FirstEventNumber, msg.LastEventNumber, msg.PreparePosition, msg.CommitPosition);
             return new TcpPackage(TcpCommand.TransactionCommitCompleted, msg.CorrelationId, dto.Serialize());
         }
 

@@ -69,13 +69,13 @@ namespace EventStore.Projections.Core.Services.Processing
 
         private void TakeNextStreamIfRequired()
         {
-            if (_dataNextSequenceNumber == long.MaxValue || _dataStreamName == null)
+            if (_dataNextSequenceNumber == EventNumber.DeletedStream || _dataStreamName == null)
             {
                 if (_dataStreamName != null)
                     SendPartitionEof(
                         _dataStreamName,
                         CheckpointTag.FromByStreamPosition(
-                            0, "", _catalogCurrentSequenceNumber, _dataStreamName, long.MaxValue,
+                            0, "", _catalogCurrentSequenceNumber, _dataStreamName, EventNumber.DeletedStream,
                             _limitingCommitPosition.Value));
                 _dataStreamName = null;
                 if (_catalogEof && _pendingStreams.Count == 0)
@@ -114,13 +114,13 @@ namespace EventStore.Projections.Core.Services.Processing
                     SendNotAuthorized();
                     return;
                 case ReadStreamResult.NoStream:
-                    _dataNextSequenceNumber = long.MaxValue;
+                    _dataNextSequenceNumber = EventNumber.DeletedStream;
                     if (completed.LastEventNumber >= 0)
                         SendPartitionDeleted_WhenReadingDataStream(_dataStreamName, -1, null, null, null, null);
                     PauseOrContinueProcessing();
                     break;
                 case ReadStreamResult.StreamDeleted:
-                    _dataNextSequenceNumber = long.MaxValue;
+                    _dataNextSequenceNumber = EventNumber.DeletedStream;
                     SendPartitionDeleted_WhenReadingDataStream(_dataStreamName, -1, null, null, null, null);
                     PauseOrContinueProcessing();
                     break;
@@ -128,7 +128,7 @@ namespace EventStore.Projections.Core.Services.Processing
                     foreach (var e in completed.Events)
                         DeliverEvent(e, 19.9f);
                     if (completed.IsEndOfStream)
-                        _dataNextSequenceNumber = long.MaxValue;
+                        _dataNextSequenceNumber = EventNumber.DeletedStream;
                     else
                         _dataNextSequenceNumber = completed.NextEventNumber;
                     PauseOrContinueProcessing();

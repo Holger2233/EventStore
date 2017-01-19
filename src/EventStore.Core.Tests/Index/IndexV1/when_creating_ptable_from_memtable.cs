@@ -48,15 +48,15 @@ namespace EventStore.Core.Tests.Index.IndexV1
         [Test]
         public void the_file_gets_created()
         {
-			var indexEntrySize = PTable.IndexEntryV3Size;
-			if (_ptableVersion == PTableVersions.IndexV1)
-			{
-				indexEntrySize = PTable.IndexEntryV1Size;
-			}
-			else if (_ptableVersion == PTableVersions.IndexV2)
-			{
-				indexEntrySize = PTable.IndexEntryV2Size;
-			}
+            var indexEntrySize = PTable.IndexEntryV3Size;
+            if (_ptableVersion == PTableVersions.IndexV1)
+            {
+                indexEntrySize = PTable.IndexEntryV1Size;
+            }
+            else if (_ptableVersion == PTableVersions.IndexV2)
+            {
+                indexEntrySize = PTable.IndexEntryV2Size;
+            }
 
             var table = new HashListMemTable(_ptableVersion, maxSize: 10);
             table.Add(0x010100000000, 0x0001, 0x0001);

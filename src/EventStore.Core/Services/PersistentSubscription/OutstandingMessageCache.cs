@@ -70,7 +70,7 @@ namespace EventStore.Core.Services.PersistentSubscription
         public long GetLowestPosition()
         {
             //TODO is there a better way of doing this?
-            if (_bySequences.Count == 0) return int.MinValue;
+            if (_bySequences.Count == 0) return long.MinValue;
             return _bySequences.Values[0];
         }
 

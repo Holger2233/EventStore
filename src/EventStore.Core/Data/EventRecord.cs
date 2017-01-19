@@ -115,7 +115,7 @@ namespace EventStore.Core.Data
         {
             unchecked
             {
-                int hashCode = (int)EventNumber;
+                int hashCode = (int)(EventNumber >> 32);
                 hashCode = (hashCode*397) ^ LogPosition.GetHashCode();
                 hashCode = (hashCode*397) ^ CorrelationId.GetHashCode();
                 hashCode = (hashCode*397) ^ EventId.GetHashCode();

@@ -89,13 +89,13 @@ namespace EventStore.Projections.Core.Services.Processing
 
         private void TakeNextStreamIfRequired()
         {
-            if (_dataNextSequenceNumber == long.MaxValue || _dataStreamName == null)
+            if (_dataNextSequenceNumber == EventNumber.DeletedStream || _dataStreamName == null)
             {
                 if (_dataStreamName != null)
                     SendPartitionEof(
                         _dataStreamName,
                         CheckpointTag.FromByStreamPosition(
-                            0, _catalogStreamName, _catalogCurrentSequenceNumber, _dataStreamName, long.MaxValue,
+                            0, _catalogStreamName, _catalogCurrentSequenceNumber, _dataStreamName, EventNumber.DeletedStream,
                             _limitingCommitPosition.Value));
                 
                 if (_catalogEof && _pendingStreams.Count == 0)
@@ -123,7 +123,7 @@ namespace EventStore.Projections.Core.Services.Processing
                     SendNotAuthorized();
                     return;
                 case ReadStreamResult.NoStream:
-                    _dataNextSequenceNumber = long.MaxValue;
+                    _dataNextSequenceNumber = EventNumber.DeletedStream;
                     if (completed.LastEventNumber >= 0)
                         SendPartitionDeleted_WhenReadingDataStream(_dataStreamName, -1, null, null, null, null);
                     PauseOrContinueProcessing();
@@ -137,7 +137,7 @@ namespace EventStore.Projections.Core.Services.Processing
                     foreach (var e in completed.Events)
                         DeliverEvent(e, 17.7f);
                     if (completed.IsEndOfStream)
-                        _dataNextSequenceNumber = long.MaxValue;
+                        _dataNextSequenceNumber = EventNumber.DeletedStream;
                     PauseOrContinueProcessing();
                     break;
                 default:

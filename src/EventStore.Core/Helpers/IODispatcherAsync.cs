@@ -159,7 +159,7 @@ namespace EventStore.Core.Helpers
             this IODispatcher ioDispatcher,
             CancellationScope cancellationScope,
             string streamId,
-            int expectedVersion,
+            long expectedVersion,
             IPrincipal principal,
             StreamMetadata metadata,
             Action<ClientMessage.WriteEventsCompleted> handler)

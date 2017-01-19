@@ -10,7 +10,7 @@ namespace EventStore.ClientAPI
     /// </summary>
     public class StreamMetadataBuilder
     {
-        private int? _maxCount;
+        private long? _maxCount;
         private TimeSpan? _maxAge;
         private long? _truncateBefore;
         private TimeSpan? _cacheControl;
@@ -23,7 +23,7 @@ namespace EventStore.ClientAPI
         private readonly IDictionary<string, JToken> _customMetadata = new Dictionary<string, JToken>();
 
         internal StreamMetadataBuilder(
-            int? maxCount = null,
+            long? maxCount = null,
             TimeSpan? maxAge = null,
             long? truncateBefore = null,
             TimeSpan? cacheControl = null,
@@ -75,7 +75,7 @@ namespace EventStore.ClientAPI
         /// </summary>
         /// <param name="maxCount">The maximum number of events allowed in the stream.</param>
         /// <returns>The builder.</returns>
-        public StreamMetadataBuilder SetMaxCount(int maxCount)
+        public StreamMetadataBuilder SetMaxCount(long maxCount)
         {
             Ensure.Positive(maxCount, "maxCount");
             _maxCount = maxCount;

@@ -19,7 +19,7 @@ namespace EventStore.ClientAPI
         /// <summary>
         /// The maximum number of events allowed in the stream.
         /// </summary>
-        public readonly int? MaxCount;
+        public readonly long? MaxCount;
         /// <summary>
         /// The maximum age of events allowed in the stream.
         /// </summary>
@@ -52,7 +52,7 @@ namespace EventStore.ClientAPI
 
         private readonly IDictionary<string, JToken> _customMetadata;
 
-        internal StreamMetadata(int? maxCount, TimeSpan? maxAge, long? truncateBefore, TimeSpan? cacheControl, 
+        internal StreamMetadata(long? maxCount, TimeSpan? maxAge, long? truncateBefore, TimeSpan? cacheControl, 
                                 StreamAcl acl, IDictionary<string, JToken> customMetadata = null)
         {
             if (maxCount <= 0)
@@ -82,7 +82,7 @@ namespace EventStore.ClientAPI
         /// <param name="cacheControl">The amount of time for which the stream head is cachable.</param>
         /// <param name="acl">The access control list for the stream.</param>
         /// <returns></returns>
-        public static StreamMetadata Create(int? maxCount = null, TimeSpan? maxAge = null, int? truncateBefore = null, TimeSpan? cacheControl = null, StreamAcl acl = null)
+        public static StreamMetadata Create(long? maxCount = null, TimeSpan? maxAge = null, long? truncateBefore = null, TimeSpan? cacheControl = null, StreamAcl acl = null)
         {
             return new StreamMetadata(maxCount, maxAge, truncateBefore, cacheControl, acl);
         }
@@ -307,7 +307,7 @@ namespace EventStore.ClientAPI
                 Check(reader.Read(), reader);
                 Check(JsonToken.StartObject, reader);
 
-                int? maxCount = null;
+                long? maxCount = null;
                 TimeSpan? maxAge = null;
                 long? truncateBefore = null;
                 TimeSpan? cacheControl = null;
@@ -327,7 +327,7 @@ namespace EventStore.ClientAPI
                         {
                             Check(reader.Read(), reader);
                             Check(JsonToken.Integer, reader);
-                            maxCount = (int)(long)reader.Value;
+                            maxCount = (long)reader.Value;
                             break;
                         }
                         case SystemMetadata.MaxAge:

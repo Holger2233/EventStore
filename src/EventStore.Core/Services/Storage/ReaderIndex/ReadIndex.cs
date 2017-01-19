@@ -28,7 +28,7 @@ namespace EventStore.Core.Services.Storage.ReaderIndex
                          ITableIndex tableIndex,
                          int streamInfoCacheCapacity,
                          bool additionalCommitChecks,
-                         int metastreamMaxCount,
+                         long metastreamMaxCount,
                          int hashCollisionReadLimit)
         {
             Ensure.NotNull(bus, "bus");

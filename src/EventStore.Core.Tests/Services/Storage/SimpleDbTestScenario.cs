@@ -25,9 +25,9 @@ namespace EventStore.Core.Tests.Services.Storage
 
         protected abstract DbResult CreateDb(TFChunkDbCreationHelper dbCreator);
 
-        private readonly int _metastreamMaxCount;
+        private readonly long _metastreamMaxCount;
 
-        protected SimpleDbTestScenario(int maxEntriesInMemTable = 20, int metastreamMaxCount = 1)
+        protected SimpleDbTestScenario(int maxEntriesInMemTable = 20, long metastreamMaxCount = 1)
         {
             Ensure.Positive(maxEntriesInMemTable, "maxEntriesInMemTable");
             MaxEntriesInMemTable = maxEntriesInMemTable;
