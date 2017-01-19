@@ -18,8 +18,9 @@ namespace EventStore.Core.TransactionLog.LogRecords
                                Guid correlationId,
                                long transactionPosition,
                                DateTime timeStamp,
-                               long firstEventNumber)
-            : base(LogRecordType.Commit, CommitRecordVersion, logPosition)
+                               long firstEventNumber,
+                               byte commitRecordVersion = CommitRecordVersion)
+            : base(LogRecordType.Commit, commitRecordVersion, logPosition)
         {
             Ensure.NotEmptyGuid(correlationId, "correlationId");
             Ensure.Nonnegative(transactionPosition, "TransactionPosition");
@@ -50,7 +51,11 @@ namespace EventStore.Core.TransactionLog.LogRecords
             base.WriteTo(writer);
 
             writer.Write(TransactionPosition);
-            writer.Write(FirstEventNumber);
+            if(Version == LogRecordVersion.LogRecordV0) {
+                writer.Write((int)FirstEventNumber);
+            } else {
+                writer.Write(FirstEventNumber);
+            }
             writer.Write(SortKey);
             writer.Write(CorrelationId.ToByteArray());
             writer.Write(TimeStamp.Ticks);

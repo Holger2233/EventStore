@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -25,8 +24,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile></DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
@@ -647,6 +645,9 @@
     <Compile Include="Index\IndexV3\ptable_midpoint_cache_should.cs" />
     <Compile Include="Index\IndexV3\index_map_should_detect_corruption.cs" />
     <Compile Include="Index\IndexV3\index_map_should.cs" />
+    <Compile Include="Services\Storage\BuildingIndex\when_building_an_index_off_tfile_with_prepares_and_commits_for_log_records_of_mixed_versions.cs" />
+    <Compile Include="Services\Storage\BuildingIndex\when_building_an_index_off_tfile_with_prepares_and_commits_for_events_with_version_numbers_greater_than_int_maxvalue.cs" />
+    <Compile Include="Services\Storage\DeletingStream\when_reading_deleted_stream_written_with_old_log_record_version.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EventStore.ClientAPI.Embedded\EventStore.ClientAPI.Embedded.csproj">

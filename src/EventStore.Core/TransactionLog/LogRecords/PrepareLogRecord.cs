@@ -93,8 +93,9 @@ namespace EventStore.Core.TransactionLog.LogRecords
                                 PrepareFlags flags,
                                 string eventType, 
                                 byte[] data,
-                                byte[] metadata)
-            : base(LogRecordType.Prepare, PrepareRecordVersion, logPosition)
+                                byte[] metadata,
+                                byte prepareRecordVersion = PrepareRecordVersion)
+            : base(LogRecordType.Prepare, prepareRecordVersion, logPosition)
         {
             Ensure.NotEmptyGuid(correlationId, "correlationId");
             Ensure.NotEmptyGuid(eventId, "eventId");
@@ -159,7 +160,11 @@ namespace EventStore.Core.TransactionLog.LogRecords
             writer.Write((ushort) Flags);
             writer.Write(TransactionPosition);
             writer.Write(TransactionOffset);
-            writer.Write(ExpectedVersion);
+            if(Version == LogRecordVersion.LogRecordV0) {
+                writer.Write((int)ExpectedVersion);
+            } else {
+                writer.Write(ExpectedVersion);
+            }
             writer.Write(EventStreamId);
 
             writer.Write(EventId.ToByteArray());
