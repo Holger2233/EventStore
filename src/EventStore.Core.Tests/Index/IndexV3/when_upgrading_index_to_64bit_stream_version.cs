@@ -7,10 +7,10 @@ using EventStore.Core.Index.Hashes;
 using System;
 using EventStore.Core.TransactionLog.LogRecords;
 
-namespace EventStore.Core.Tests.Index.IndexV2
+namespace EventStore.Core.Tests.Index.IndexV3
 {
     [TestFixture, Category("LongRunning")]
-    public class table_index_hash_collision_when_upgrading_to_64bit : SpecificationWithDirectoryPerTestFixture
+    public class when_upgrading_index_to_64bit_stream_version : SpecificationWithDirectoryPerTestFixture
     {
         private TableIndex _tableIndex;
         private IHasher _lowHasher;
@@ -18,9 +18,9 @@ namespace EventStore.Core.Tests.Index.IndexV2
         private string _indexDir;
         protected byte _ptableVersion;
 
-        public table_index_hash_collision_when_upgrading_to_64bit()
+        public when_upgrading_index_to_64bit_stream_version()
         {
-            _ptableVersion = PTableVersions.IndexV2;
+            _ptableVersion = PTableVersions.IndexV3;
         }
 
         [OneTimeSetUp]
@@ -33,18 +33,18 @@ namespace EventStore.Core.Tests.Index.IndexV2
             _lowHasher = new XXHashUnsafe();
             _highHasher = new Murmur3AUnsafe();
             _tableIndex = new TableIndex(_indexDir, _lowHasher, _highHasher,
-                                         () => new HashListMemTable(PTableVersions.IndexV1, maxSize: 5),
+                                         () => new HashListMemTable(PTableVersions.IndexV2, maxSize: 5),
                                          () => fakeReader,
-                                         PTableVersions.IndexV1,
+                                         PTableVersions.IndexV2,
                                          maxSizeForMemory: 5,
                                          maxTablesPerLevel: 2);
             _tableIndex.Initialize(long.MaxValue);
 
-            _tableIndex.Add(1, "LPN-FC002_LPK51001", 0, 1);
-            _tableIndex.Add(1, "account--696193173", 0, 2);
-            _tableIndex.Add(1, "LPN-FC002_LPK51001", 1, 3);
-            _tableIndex.Add(1, "account--696193173", 1, 4);
-            _tableIndex.Add(1, "LPN-FC002_LPK51001", 2, 5);
+            _tableIndex.Add(1, "testStream-1", 0, 1);
+            _tableIndex.Add(1, "testStream-2", 0, 2);
+            _tableIndex.Add(1, "testStream-1", 1, 3);
+            _tableIndex.Add(1, "testStream-2", 1, 4);
+            _tableIndex.Add(1, "testStream-1", 2, 5);
 
             _tableIndex.Close(false);
 
@@ -56,11 +56,11 @@ namespace EventStore.Core.Tests.Index.IndexV2
                                          maxTablesPerLevel: 2);
             _tableIndex.Initialize(long.MaxValue);
 
-            _tableIndex.Add(1, "account--696193173", 2, 6);
-            _tableIndex.Add(1, "LPN-FC002_LPK51001", 3, 7);
-            _tableIndex.Add(1, "account--696193173", 3, 8);
-            _tableIndex.Add(1, "LPN-FC002_LPK51001", 4, 9);
-            _tableIndex.Add(1, "account--696193173", 4, 10);
+            _tableIndex.Add(1, "testStream-2", 2, 6);
+            _tableIndex.Add(1, "testStream-1", 3, 7);
+            _tableIndex.Add(1, "testStream-2", 3, 8);
+            _tableIndex.Add(1, "testStream-1", 4, 9);
+            _tableIndex.Add(1, "testStream-2", 4, 10);
 
             Thread.Sleep(500);
         }
@@ -76,7 +76,7 @@ namespace EventStore.Core.Tests.Index.IndexV2
         [Test]
         public void should_have_entries_in_sorted_order()
         {
-            var streamId = "account--696193173";
+            var streamId = "testStream-2";
             var result = _tableIndex.GetRange(streamId, 0, 4).ToArray();
             var hash = (ulong)_lowHasher.Hash(streamId) << 32 | _highHasher.Hash(streamId);
 
@@ -102,7 +102,7 @@ namespace EventStore.Core.Tests.Index.IndexV2
             Assert.That(result[4].Version, Is.EqualTo(0));
             Assert.That(result[4].Position, Is.EqualTo(2));
 
-            streamId = "LPN-FC002_LPK51001";
+            streamId = "testStream-1";
             result = _tableIndex.GetRange(streamId, 0, 4).ToArray();
             hash = (ulong)_lowHasher.Hash(streamId) << 32 | _highHasher.Hash(streamId);
 
@@ -149,7 +149,7 @@ namespace EventStore.Core.Tests.Index.IndexV2
 
         public RecordReadResult TryReadAt(long position)
         {
-            var record = (LogRecord)new PrepareLogRecord(position, Guid.NewGuid(), Guid.NewGuid(), 0, 0, position % 2 == 0 ? "account--696193173" : "LPN-FC002_LPK51001", -1, DateTime.UtcNow, PrepareFlags.None, "type", new byte[0], null);
+            var record = (LogRecord)new PrepareLogRecord(position, Guid.NewGuid(), Guid.NewGuid(), 0, 0, position % 2 == 0 ? "testStream-2" : "testStream-1", -1, DateTime.UtcNow, PrepareFlags.None, "type", new byte[0], null);
             return new RecordReadResult(true, position + 1, record, 1);
         }
 
