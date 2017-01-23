@@ -168,8 +168,8 @@ namespace EventStore.Core.TransactionLog.Chunks
                 foreach (var oldChunk in oldChunks)
                 {
                     TraverseChunk(oldChunk,
-                                  prepare => { /* NOOP */ },
-                                  commit =>
+                                  (prepare, bytesToMoveOnBy) => { /* NOOP */ },
+                                  (commit, bytesToMoveOnBy) =>
                                   {
                                       if (commit.TransactionPosition >= chunkStartPos)
                                           commits.Add(commit.TransactionPosition, new CommitInfo(commit));
@@ -181,15 +181,21 @@ namespace EventStore.Core.TransactionLog.Chunks
                 foreach (var oldChunk in oldChunks)
                 {
                     TraverseChunk(oldChunk,
-                                  prepare =>
+                                  (prepare, bytesToMoveOnBy) =>
                                   {
                                       if (ShouldKeepPrepare(prepare, commits, chunkStartPos, chunkEndPos))
+                                      {
+                                        prepare = UpgradePrepareVersion(prepare, bytesToMoveOnBy);
                                           positionMapping.Add(WriteRecord(newChunk, prepare));
+                                      }
                                   },
-                                  commit =>
+                                  (commit, bytesToMoveOnBy) =>
                                   {
                                       if (ShouldKeepCommit(commit, commits))
+                                      {
+                                        commit = UpgradeCommitVersion(commit, bytesToMoveOnBy);
                                           positionMapping.Add(WriteRecord(newChunk, commit));
+                                      }
                                   },
                                   // we always keep system log records for now
                                   system => positionMapping.Add(WriteRecord(newChunk, system)));
@@ -462,26 +468,30 @@ namespace EventStore.Core.TransactionLog.Chunks
         }
 
         private void TraverseChunk(TFChunk.TFChunk chunk,
-                                   Action<PrepareLogRecord> processPrepare,
-                                   Action<CommitLogRecord> processCommit,
+                                   Action<PrepareLogRecord, int> processPrepare,
+                                   Action<CommitLogRecord, int> processCommit,
                                    Action<SystemLogRecord> processSystem)
         {
             var result = chunk.TryReadFirst();
+            int bytesToMoveOnBy = 0;
             while (result.Success)
             {
+                bool upgraded = false;
                 var record = result.LogRecord;
                 switch (record.RecordType)
                 {
                     case LogRecordType.Prepare:
                     {
                         var prepare = (PrepareLogRecord)record;
-                        processPrepare(prepare);
+                        upgraded = prepare.Version == LogRecordVersion.LogRecordV0;
+                        processPrepare(prepare, bytesToMoveOnBy);
                         break;
                     }
                     case LogRecordType.Commit:
                     {
                         var commit = (CommitLogRecord)record;
-                        processCommit(commit);
+                        upgraded = commit.Version == LogRecordVersion.LogRecordV0;
+                        processCommit(commit, bytesToMoveOnBy);
                         break;
                     }
                     case LogRecordType.System:
@@ -494,10 +504,25 @@ namespace EventStore.Core.TransactionLog.Chunks
                         throw new ArgumentOutOfRangeException();
                 }
                 result = chunk.TryReadClosestForward(result.NextPosition);
+                if(upgraded) {
+                    bytesToMoveOnBy += 4;
+                }
             }
         }
 
-        private static PosMap WriteRecord(TFChunk.TFChunk newChunk, LogRecord record)
+        private PrepareLogRecord UpgradePrepareVersion(PrepareLogRecord prepare, int bytesToMoveOnBy)
+        {
+            return new PrepareLogRecord(prepare.LogPosition + bytesToMoveOnBy, prepare.CorrelationId, prepare.EventId, prepare.TransactionPosition, 
+                                        prepare.TransactionOffset, prepare.EventStreamId, prepare.ExpectedVersion, prepare.TimeStamp, prepare.Flags, prepare.EventType,
+                                        prepare.Data, prepare.Metadata);
+        }
+
+        private CommitLogRecord UpgradeCommitVersion(CommitLogRecord commit, int bytesToMoveOnBy)
+        {
+            return new CommitLogRecord(commit.LogPosition + bytesToMoveOnBy, commit.CorrelationId, commit.TransactionPosition, commit.TimeStamp, commit.FirstEventNumber);
+        }
+
+        private static PosMap WriteRecord(TFChunk.TFChunk newChunk, LogRecord record, int bytesToMoveOnBy = 0)
         {
             var writeResult = newChunk.TryAppend(record);
             if (!writeResult.Success)
@@ -508,7 +533,7 @@ namespace EventStore.Core.TransactionLog.Chunks
                         record));
             }
             long logPos = newChunk.ChunkHeader.GetLocalLogPosition(record.LogPosition);
-            int actualPos = (int) writeResult.OldPosition;
+            int actualPos = (int) writeResult.OldPosition + bytesToMoveOnBy;
             return new PosMap(logPos, actualPos);
         }
 

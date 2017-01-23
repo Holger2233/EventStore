@@ -649,6 +649,8 @@
     <Compile Include="Services\Storage\BuildingIndex\when_building_an_index_off_tfile_with_prepares_and_commits_for_events_with_version_numbers_greater_than_int_maxvalue.cs" />
     <Compile Include="Services\Storage\DeletingStream\when_reading_deleted_stream_written_with_old_log_record_version.cs" />
     <Compile Include="Index\IndexV3\when_upgrading_index_to_64bit_stream_version.cs" />
+    <Compile Include="Services\Storage\Scavenge\when_stream_is_softdeleted_with_log_record_version_0.cs" />
+    <Compile Include="Services\Storage\Scavenge\when_scavenging_tfchunk_with_version0_log_records.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EventStore.ClientAPI.Embedded\EventStore.ClientAPI.Embedded.csproj">
