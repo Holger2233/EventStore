@@ -651,6 +651,9 @@
     <Compile Include="Index\IndexV3\when_upgrading_index_to_64bit_stream_version.cs" />
     <Compile Include="Services\Storage\Scavenge\when_stream_is_softdeleted_with_log_record_version_0.cs" />
     <Compile Include="Services\Storage\Scavenge\when_scavenging_tfchunk_with_version0_log_records.cs" />
+    <Compile Include="Services\Storage\Scavenge\when_scavenging_tfchunk_with_version0_log_records_and_deleted_records.cs" />
+    <Compile Include="Services\Storage\Scavenge\when_scavenging_tfchunk_with_version0_log_records_using_transactions.cs" />
+    <Compile Include="Services\Storage\Scavenge\when_scavenging_tfchunk_with_version0_log_records_prepares_first_then_commits.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EventStore.ClientAPI.Embedded\EventStore.ClientAPI.Embedded.csproj">

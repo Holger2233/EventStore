@@ -41,6 +41,12 @@ namespace EventStore.Core.TransactionLog.LogRecords
 
             TransactionPosition = reader.ReadInt64();
             FirstEventNumber = version == LogRecordVersion.LogRecordV0 ? reader.ReadInt32() : reader.ReadInt64();
+            // Update first event number for deleted streams
+            if (FirstEventNumber == int.MaxValue && version == LogRecordVersion.LogRecordV0)
+            {
+                FirstEventNumber = long.MaxValue;
+            }
+
             SortKey = reader.ReadInt64();
             CorrelationId = new Guid(reader.ReadBytes(16));
             TimeStamp = new DateTime(reader.ReadInt64());

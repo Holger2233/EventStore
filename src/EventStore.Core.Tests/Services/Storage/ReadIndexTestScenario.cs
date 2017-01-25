@@ -41,6 +41,8 @@ namespace EventStore.Core.Tests.Services.Storage
         private bool _completeLastChunkOnScavenge;
         private bool _mergeChunks;
 
+        protected bool _rebuildIndexAfterScaveng;
+
         protected ReadIndexTestScenario(int maxEntriesInMemTable = 20, long metastreamMaxCount = 1, byte indexBitnessVersion = Opts.IndexBitnessVersionDefault, bool performAdditionalChecks = true)
         {
             Ensure.Positive(maxEntriesInMemTable, "maxEntriesInMemTable");
@@ -107,6 +109,26 @@ namespace EventStore.Core.Tests.Services.Storage
                     Db.Manager.GetChunk(Db.Manager.ChunksCount - 1).Complete();
                 _scavenger = new TFChunkScavenger(Db, IODispatcher, TableIndex, ReadIndex, Guid.NewGuid(), "fakeNodeIp");
                 _scavenger.Scavenge(alwaysKeepScavenged: true, mergeChunks: _mergeChunks);
+            }
+
+            if(_rebuildIndexAfterScaveng) {
+                ReadIndex.Dispose();
+                TableIndex.Close(true);
+                TableIndex = new TableIndex(GetFilePathFor("index"), lowHasher, highHasher,
+                                            () => new HashListMemTable(IndexBitnessVersion, MaxEntriesInMemTable * 2),
+                                            () => new TFReaderLease(readers),
+                                            IndexBitnessVersion,
+                                            MaxEntriesInMemTable);
+
+                ReadIndex = new ReadIndex(new NoopPublisher(),
+                                          readers,
+                                          TableIndex,
+                                          0,
+                                          additionalCommitChecks: PerformAdditionalCommitChecks,
+                                          metastreamMaxCount: MetastreamMaxCount,
+                                          hashCollisionReadLimit: Opts.HashCollisionReadLimitDefault);
+
+                ReadIndex.Init(ChaserCheckpoint.Read());
             }
         }
 
@@ -356,6 +378,19 @@ namespace EventStore.Core.Tests.Services.Storage
             Assert.IsTrue(Writer.Write(commit, out pos));
 
             return commit;
+        }
+
+        protected long WriteSingelEventWithLogVersion0(Guid id, string streamId, long position, long expectedVersion, PrepareFlags? flags = null)
+        {
+            if(!flags.HasValue) {
+                flags = PrepareFlags.SingleWrite;
+            }
+            long pos;
+            Writer.Write(new PrepareLogRecord(position, id, id, position, 0, streamId, expectedVersion, DateTime.UtcNow,
+                                              flags.Value, "type", new byte[0], new byte[0], LogRecordVersion.LogRecordV0),
+                         out pos);
+            Writer.Write(new CommitLogRecord(pos, id, position, DateTime.UtcNow, expectedVersion, LogRecordVersion.LogRecordV0), out pos);
+            return pos;
         }
 
         protected TFPos GetBackwardReadPos()

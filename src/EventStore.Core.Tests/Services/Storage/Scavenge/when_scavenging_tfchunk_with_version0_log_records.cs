@@ -1,44 +1,30 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using EventStore.Core.Data;
-using EventStore.Core.Tests.TransactionLog.Scavenging.Helpers;
+using EventStore.Core.Services.Storage.ReaderIndex;
+using EventStore.Core.Tests.Services.Storage;
 using EventStore.Core.TransactionLog;
 using EventStore.Core.TransactionLog.LogRecords;
 using NUnit.Framework;
-using ReadStreamResult = EventStore.Core.Services.Storage.ReaderIndex.ReadStreamResult;
 
 namespace EventStore.Core.Tests.Services.Storage.Scavenge
 {
     [TestFixture]
-    [Category("UnderTest")]
     public class when_scavenging_tfchunk_with_version0_log_records : ReadIndexTestScenario
     {
-        private string eventStreamId = "ES";
+        private string _eventStreamId = "ES";
         private Guid _id1, _id2, _id3;
-        private long _pos1, _pos2, _pos3, _pos4, _pos5;
+        private long _pos1, _pos2;
 
         protected override void WriteTestScenario()
         {
             _id1 = Guid.NewGuid();
             _id2 = Guid.NewGuid();
             _id3 = Guid.NewGuid();
-            Writer.Write(new PrepareLogRecord(0, _id1, _id1, 0, 0, eventStreamId, 0, DateTime.UtcNow,
-                                              PrepareFlags.SingleWrite, "type", Encoding.UTF8.GetBytes("EventOne"), new byte[0], LogRecordVersion.LogRecordV0),
-                         out _pos1);
-            Writer.Write(new CommitLogRecord(_pos1, _id1, 0, DateTime.UtcNow, 0, LogRecordVersion.LogRecordV0), out _pos2);
-
-            Writer.Write(new PrepareLogRecord(_pos2, _id2, _id2, _pos2, 0, eventStreamId, 1, DateTime.UtcNow,
-                                              PrepareFlags.SingleWrite, "type", Encoding.UTF8.GetBytes("EventTwo"), new byte[0], LogRecordVersion.LogRecordV0),
-                         out _pos3);
-            Writer.Write(new CommitLogRecord(_pos3, _id2, _pos2, DateTime.UtcNow, 1, LogRecordVersion.LogRecordV0), out _pos4);
-
-            Writer.Write(new PrepareLogRecord(_pos4, _id3, _id3, _pos4, 0, eventStreamId, 2, DateTime.UtcNow,
-                                              PrepareFlags.SingleWrite, "type", Encoding.UTF8.GetBytes("EventThree"), new byte[0], LogRecordVersion.LogRecordV0),
-                         out _pos5);
-            long pos6;
-            Writer.Write(new CommitLogRecord(_pos5, _id3, _pos4, DateTime.UtcNow, 2), out pos6);
+            _pos1 = WriteSingelEventWithLogVersion0(_id1, _eventStreamId, 0, 0);
+            _pos2 = WriteSingelEventWithLogVersion0(_id2, _eventStreamId, _pos1, 1);
+            WriteSingelEventWithLogVersion0(_id3, _eventStreamId, _pos2, 2);
 
             Writer.CompleteChunk();
 
@@ -63,7 +49,7 @@ namespace EventStore.Core.Tests.Services.Storage.Scavenge
         [Test]
         public void should_be_able_to_read_record_two()
         {
-            var result = ReadIndex.ReadAllEventsForward(new TFPos(_pos2 + 8, _pos2 + 8), 1);
+            var result = ReadIndex.ReadAllEventsForward(new TFPos(_pos1 + 8, _pos1 + 8), 1);
             var evnt = result.Records[0].Event;
             Assert.AreEqual(_id2, evnt.EventId);
         }
@@ -72,7 +58,7 @@ namespace EventStore.Core.Tests.Services.Storage.Scavenge
         [Test]
         public void should_be_able_to_read_record_three()
         {
-            var result = ReadIndex.ReadAllEventsForward(new TFPos(_pos4 + 16, _pos4 + 16), 1);
+            var result = ReadIndex.ReadAllEventsForward(new TFPos(_pos2 + 16, _pos2 + 16), 1);
             var evnt = result.Records[0].Event;
             Assert.AreEqual(_id3, evnt.EventId);
         }

@@ -318,7 +318,7 @@ namespace EventStore.Core.Util
         public static int IndexCacheDepthDefault = 16;
 
         public const string IndexBitnessVersionDescr = "Sets the bitness version for the indexes to use";
-        public const byte IndexBitnessVersionDefault = EventStore.Core.Index.PTableVersions.IndexV2;
+        public const byte IndexBitnessVersionDefault = EventStore.Core.Index.PTableVersions.IndexV3;
 		/*
 		 * Authentication Options
 		 */
